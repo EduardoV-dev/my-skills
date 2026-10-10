@@ -70,6 +70,9 @@ features/space-setup/
 - Assign function and method results to descriptive constants before using them in `if` conditions,
   including asynchronous lookups. Keep the condition focused on the decision.
 - Use a single options object for functions with more than two parameters.
+- Start function and method names with a verb that describes their behavior: use `generateTokenKey()`
+  rather than `tokenKey()` when generating a key, or `getTokenKey()` when retrieving one. Preserve
+  framework-required names and established component, hook, and predicate conventions.
 - Keep transformations pure where practical and make side effects explicit.
 - Use descriptive domain names for files, functions, classes, methods, variables, and types.
 - Prefix booleans with `is`, `has`, `can`, or `should`.
@@ -159,7 +162,8 @@ not a claim of exhaustive coverage.
 ## Completion Checklist
 
 - No authored code file exceeds 400 lines; files live at the narrowest ownership level.
-- Names are descriptive and behavioral values are explained.
+- Names are descriptive, function and method names start with behavior-appropriate verbs, and
+  behavioral values are explained.
 - Environment reads use the owning project's constants boundary; missing variables are added there,
   with public/private separation and evaluation timing preserved.
 - Relevant tests cover observable behavior; applicable domain/technology checklists are satisfied.
