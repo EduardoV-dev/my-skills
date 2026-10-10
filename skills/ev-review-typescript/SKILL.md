@@ -23,7 +23,14 @@ Supply technology rules to the active review; do not start an independent review
   validation of untrusted input required by general rules.
 - Avoid `any`; use `unknown` and narrow it. Avoid assertions unless runtime validation or a documented
   invariant justifies them.
+- Avoid double assertions such as `value as unknown as Memory`. When an assertion is justified, use a
+  direct assertion such as `value as Memory`; if it is rejected, fix or validate the value rather
+  than bypassing the type compatibility check.
 - Use discriminated unions for mutually exclusive states instead of combinations of optional fields.
+- Prefer one destructured object parameter over multiple positional parameters. Use an inline object
+  type for parameter or return objects with one or two properties; use a named `<FunctionName>Params`
+  or `<FunctionName>Return` type for three or more properties. Use a named type at any size when
+  another function reuses or extends that contract. Assess parameter and return objects separately.
 - If the owning application/package has no environment constants module, recommend
   `src/constants/environment-variables.ts`. Reuse an established module even at another path; preserve
   the general configuration-boundary exceptions and evaluation timing.
@@ -39,11 +46,13 @@ Supply technology rules to the active review; do not start an independent review
 ## Execution Steps
 
 1. Read scoped contracts, consumers, owning TypeScript configuration, and relevant tests.
-2. Check exported types, narrowing, state modeling, response contracts, and environment ownership.
+2. Check exported types, narrowing, state modeling, response contracts, function parameter/return
+   object shapes, and environment ownership.
 3. Use the project's documented non-writing typecheck when assigned by the coordinator; report gaps.
 
 ## Output Contract
 
 Return evidence-backed candidates with severity, `path:line`, rule wording, impact, and smallest fix,
-plus checks/gaps. Checklist: strictness, exported contracts, narrowing, discriminated states, and
-environment-module ownership. Let `ev-code-review` consolidate the report.
+plus checks/gaps. Checklist: strictness, exported contracts, narrowing, discriminated states, object
+parameter/return type reuse and size, and environment-module ownership. Let `ev-code-review`
+consolidate the report.
