@@ -14,6 +14,7 @@
 - `skills/ev-review-typescript/SKILL.md` — optional TypeScript contract rules.
 - `skills/ev-review-react/SKILL.md` — optional React component, hook, and rendering rules.
 - `skills/ev-review-nextjs/SKILL.md` — optional Next.js route and client/server boundary rules.
+- `skills/ev-review-nestjs/SKILL.md` — optional NestJS injected-service naming rules.
 - `skills/ev-review-postgres/SKILL.md` — optional PostgreSQL privileged-function rules.
 - `skills/ev-review-supabase/SKILL.md` — optional Supabase RLS and PostgREST filter rules.
 

@@ -19,6 +19,7 @@ automatically select the core when you select a companion.
 | `ev-review-typescript` | TypeScript contracts, narrowing, and environment-module conventions |
 | `ev-review-react` | React components, hooks, state, safe rendering, and applicable UI testing |
 | `ev-review-nextjs` | Next.js routes, rendering, Server Actions, and client/server environment boundaries |
+| `ev-review-nestjs` | NestJS injected-service naming for constructor, property, and custom-token injection |
 | `ev-review-postgres` | PostgreSQL privileged functions, safe resolution paths, and execution grants |
 | `ev-review-supabase` | Supabase RLS/policies, cross-account isolation, and PostgREST filters |
 
