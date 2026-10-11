@@ -56,6 +56,12 @@ features/space-setup/
 
 - Feature and domain logic must not depend on UI. Domain transformations should not import UI
   frameworks, routing, or browser APIs.
+- In monorepos with multiple applications under `apps/*`, applications must not import another
+  application's source, whether through relative paths, aliases, or workspace dependencies. When code
+  is genuinely shared, extract it into an existing or focused package under `packages/*` and have
+  both applications consume its public exports. Keep application-specific entry points,
+  configuration, and orchestration in their owning app; shared packages must not depend on app source.
+  Recommend extraction for demonstrated reuse, not hypothetical future consumers.
 - Isolate network, database, storage, timers, and navigation at explicit boundaries.
 - Do not add a dependency when the platform, standard library, or an installed package is sufficient.
 - Add wrappers around dependencies only when a concrete boundary or multiple consumers need one.
@@ -173,6 +179,8 @@ not a claim of exhaustive coverage.
 ## Completion Checklist
 
 - No authored code file exceeds 400 lines; files live at the narrowest ownership level.
+- In monorepos with multiple `apps/*`, application-to-application source imports are replaced by
+  shared package public exports when reuse is genuine.
 - Names are descriptive, function and method names start with behavior-appropriate verbs, and
   error-creation names prefer an `Error` suffix; behavioral values are explained.
 - Independent asynchronous operations use `Promise.all` where concurrent execution is safe.
