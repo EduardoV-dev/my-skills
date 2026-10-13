@@ -7,7 +7,6 @@ copy third-party files into this repository.
 
 | Skill/tool | Use | Source | Install |
 | --- | --- | --- | --- |
-| Grill Me | Ask focused questions to expose assumptions and clarify a plan. | [mattpocock/skills](https://github.com/mattpocock/skills) | `npx skills add https://github.com/mattpocock/skills --skill grill-me` |
 | TDD | Apply a test-driven development workflow. | [mattpocock/skills](https://github.com/mattpocock/skills) | `npx skills add https://github.com/mattpocock/skills --skill tdd` |
 | Ponytail | Prefer the smallest correct implementation; avoid unnecessary code and dependencies. | [dietrichgebert/ponytail](https://github.com/dietrichgebert/ponytail) | `npx skills add https://github.com/dietrichgebert/ponytail --skill ponytail` |
 | Turborepo | Apply Turborepo monorepo practices. | [vercel/turborepo](https://github.com/vercel/turborepo) | `npx skills add https://github.com/vercel/turborepo --skill turborepo` |
@@ -18,6 +17,14 @@ copy third-party files into this repository.
 | Skill | Use | Source | Install |
 | --- | --- | --- | --- |
 | Humanizer | Edit prose to sound natural while preserving meaning and factual details. | [blader/humanizer](https://github.com/blader/humanizer) | `npx skills add https://github.com/blader/humanizer --skill humanizer` |
+
+## Product Discovery
+
+| Skill | Use | Source | Install |
+| --- | --- | --- | --- |
+| Grill Me | Ask focused questions to expose assumptions and clarify a plan. | [mattpocock/skills](https://github.com/mattpocock/skills) | `npx skills add https://github.com/mattpocock/skills --skill grill-me` |
+| Grilling | Interview the user about a plan, decision, or idea until its design branches are resolved. | [mattpocock/skills](https://github.com/mattpocock/skills) | `npx skills add https://github.com/mattpocock/skills --skill grilling` |
+| Gap Analysis | Evaluate product and feature ideas for desirability, viability, feasibility, integrity, risks, and competitive gaps. | [jkappers/agent-skills](https://github.com/jkappers/agent-skills/tree/main/skills/gap-analysis) | `npx skills add https://github.com/jkappers/agent-skills --skill gap-analysis` |
 
 ## Frontend
 
