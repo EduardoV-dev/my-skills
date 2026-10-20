@@ -31,6 +31,7 @@ copy third-party files into this repository.
 | Skill/tool | Use | Source | Install |
 | --- | --- | --- | --- |
 | Impeccable | Design, critique, and refine frontend interfaces. | [Impeccable getting started](https://impeccable.style/tutorials/getting-started/) | `npx impeccable install` |
+| Astro | Build Astro components and pages, configure SSR and content collections, and deploy Astro sites. | [astrolicious/agent-skills](https://github.com/astrolicious/agent-skills) | `npx skills add https://github.com/astrolicious/agent-skills --skill astro` |
 | Vercel React Best Practices | Review and improve React performance practices. | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) | `npx skills add https://github.com/vercel-labs/agent-skills --skill vercel-react-best-practices` |
 | Vercel Composition Patterns | Apply React component composition patterns. | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) | `npx skills add https://github.com/vercel-labs/agent-skills --skill vercel-composition-patterns` |
 
