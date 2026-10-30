@@ -27,8 +27,14 @@ Supply technology rules to the active review; do not start an independent review
   do not redefine endpoint-local envelopes. Preserve protocol-defined non-JSON/bodyless responses.
 - Check offset/cursor page types against backend metadata rules. Infer cursor types from extendable
   Zod object schemas; require schema-aware shared encode/decode methods without unchecked assertions.
-- Avoid `any`; use `unknown` and narrow it. Avoid assertions unless runtime validation or a documented
-  invariant justifies them.
+- Avoid `any`. Preserve established TypeScript contracts throughout the call chain: accept and use
+  concrete interfaces and types directly. Do not widen known values to `unknown`, replace them with
+  generic records, repeat checks guaranteed by their contracts, or add handwritten parsers that
+  reconstruct the same guarantees.
+- Use `unknown` and runtime validation where values genuinely lack an established contract, such as
+  untrusted external input. Type annotations alone do not validate that input. Preserve checks for
+  conditions the declared contract does not guarantee, including decoded content, business invariants,
+  and authorization. Avoid assertions unless runtime validation or a documented invariant justifies them.
 - Avoid double assertions such as `value as unknown as Memory`. When an assertion is justified, use a
   direct assertion such as `value as Memory`; if it is rejected, fix or validate the value rather
   than bypassing the type compatibility check.
@@ -49,17 +55,18 @@ Supply technology rules to the active review; do not start an independent review
 | TypeScript source/declarations or related configuration/tests | Apply relevant type/contract rules. |
 | JavaScript-only code or TypeScript merely installed | Do not apply TypeScript requirements. |
 | Untrusted runtime input | Apply general validation rules; static types are not validation. |
+| Value with an established concrete contract | Preserve its type; flag redundant widening, validation, and parsing without removing checks outside its guarantees. |
 
 ## Execution Steps
 
 1. Read scoped contracts, consumers, owning TypeScript configuration, and relevant tests.
-2. Check exported types, narrowing, state modeling, response/page contracts and cursor schemas, function parameter/return
+2. Check exported types, contract preservation, necessary narrowing, state modeling, response/page contracts and cursor schemas, function parameter/return
    object shapes, and environment ownership.
 3. Use the project's documented non-writing typecheck when assigned by the coordinator; report gaps.
 
 ## Output Contract
 
 Return evidence-backed candidates with severity, `path:line`, rule wording, impact, and smallest fix,
-plus checks/gaps. Checklist: strictness, exported contracts, narrowing, discriminated states, object
+plus checks/gaps. Checklist: strictness, exported contracts, contract preservation, necessary narrowing, discriminated states, object
 parameter/return type reuse and size, and environment-module ownership. Let `ev-code-review`
 consolidate the report.
