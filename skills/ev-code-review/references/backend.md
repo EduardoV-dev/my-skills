@@ -10,6 +10,28 @@ Load general rules as well. Shared contracts may require inspection across front
 - Validate type, length, range, format, and allowed values on the server. Client validation is only for UX.
 - Return generic client errors without stack traces, SQL details, internal paths, tokens, or enumeration clues.
 
+## API Responses And Pagination
+
+- Require the standard envelope on first-party JSON APIs: success has `ok: true`, a `data` payload,
+  `error: []`, and a string `message`; failure has `ok: false`, `data: null`, an `error` array, and a
+  string `message`. Each error has string `code` and `message`, and optional string `field`.
+  Keep appropriate HTTP statuses. Preserve protocol-defined redirects, streams, downloads, and bodyless responses.
+- Wrap the entire pagination payload in that envelope: `data` contains `{ data: items, meta }`.
+  Offset metadata requires boolean `hasNextPage`/`hasPreviousPage` and numeric `total`/`page`/`pageSize`.
+  Require positive bounded pagination inputs, one-based pages, totals over authorized filtered rows,
+  and flags consistent with totals. Use deterministic ordering with a unique tie-breaker.
+- Cursor metadata always includes `nextCursor: string | null`; include `prevCursor: string | null`
+  only when explicitly requested. Use null at traversal boundaries and verify another page exists.
+- Require shared cursor encode/decode utilities, Zod payload validation, an extendable base schema,
+  and schema-aware methods. Handle malformed encoding/JSON/payloads as API validation errors.
+- When available, use both `createdAt` and `id` in cursor payloads, deterministic ordering, and
+  lexicographic continuation predicates; preserve timestamp precision. Extensions must match query ordering.
+  Keep authorization and filters consistent across pages; cursors are not authorization.
+- When implementing pagination, recommend offset for numbered/random-access pages and exact totals,
+  or cursor for sequential/large/changing datasets. Ask the user to choose and stop until answered,
+  unless the current task already specifies the choice. Review-only work reports violations without
+  interrupting for implementation decisions; load installed `ev-api-contracts` for implementation.
+
 ## SQL And Other Injection Prevention
 
 - Use a database query builder, parameterized SQL, or typed RPC parameters. Never concatenate or
@@ -62,3 +84,5 @@ Load general rules as well. Shared contracts may require inspection across front
 - Queries, commands, paths, outbound requests, and webhooks have applicable injection/integrity controls.
 - Cookie/CSP/CORS/CSRF controls apply where relevant; abuse and execution limits preserve data integrity.
 - Relevant tests cover access control, hostile input, timeouts, and partial failures.
+- API envelopes and pagination metadata match their contracts; cursor checks cover malformed input,
+  round trips, tied timestamps, boundaries, and backward navigation when requested.

@@ -75,7 +75,8 @@ features/space-setup/
   when several conditions contribute to a decision, rather than placing a long expression in an `if`.
 - Assign function and method results to descriptive constants before using them in `if` conditions,
   including asynchronous lookups. Keep the condition focused on the decision.
-- Use a single options object for functions with more than two parameters.
+- Use a single object parameter for functions with more than two parameters and destructure it directly
+  in the function signature instead of naming the parameter `options` or `params`.
 - Start function and method names with a verb that describes their behavior: use `generateTokenKey()`
   rather than `tokenKey()` when generating a key, or `getTokenKey()` when retrieving one. Preserve
   framework-required names and established component, hook, and predicate conventions.

@@ -2,6 +2,19 @@
 
 A personal collection of installable agent skills and a catalog of useful skills from other authors.
 
+## API implementation rules
+
+Install `ev-api-contracts` to standardize first-party JSON API envelopes and pagination:
+
+```bash
+npx skills add EduardoV-dev/my-skills --skill ev-api-contracts
+```
+
+The skill requires shared `ApiError`/`ApiResponse<T>` contracts, wrapped offset/cursor pages, and
+validated extensible cursor utilities. Before implementing pagination, it recommends a strategy and
+waits for your choice. Review enforcement lives in `ev-code-review`'s backend rules and
+`ev-review-typescript`; neither requires this implementation skill to be installed.
+
 ## Install review skills
 
 After publishing this repository on GitHub, run this from the target project for interactive selection:
@@ -19,7 +32,7 @@ automatically select the core when you select a companion.
 | `ev-review-typescript` | TypeScript contracts, narrowing, and environment-module conventions |
 | `ev-review-react` | React components, hooks, state, safe rendering, and applicable UI testing |
 | `ev-review-nextjs` | Next.js routes, rendering, Server Actions, and client/server environment boundaries |
-| `ev-review-nestjs` | NestJS injected-service naming for constructor, property, and custom-token injection |
+| `ev-review-nestjs` | NestJS injected-service naming, per-category module layout, and local `__tests__/` placement |
 | `ev-review-postgres` | PostgreSQL privileged functions, safe resolution paths, and execution grants |
 | `ev-review-supabase` | Supabase RLS/policies, cross-account isolation, and PostgREST filters |
 
