@@ -1,6 +1,6 @@
 ---
 name: ev-review-typescript
-description: "Trigger: TypeScript code review with ev-code-review. Supply TypeScript contract and environment-module rules for scoped TypeScript code."
+description: "Trigger: implementing or reviewing TypeScript. Supply contract, type, import, and environment rules before coding or with ev-code-review."
 license: Apache-2.0
 metadata:
   author: "eduardovdev"
@@ -11,8 +11,9 @@ metadata:
 
 ## Activation Contract
 
-Use as an optional `ev-code-review` companion for TypeScript source, declarations, and their tests.
-Supply technology rules to the active review; do not start an independent review or delegate.
+Use before implementing TypeScript source/declarations/tests, or as an optional `ev-code-review`
+companion. Load general/domain rules through `ev-coding-standards` for implementation; do not start
+an independent review or delegate. Review output/check assignments apply only during reviews.
 
 ## Hard Rules
 

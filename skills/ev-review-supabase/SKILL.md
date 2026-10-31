@@ -1,6 +1,6 @@
 ---
 name: ev-review-supabase
-description: "Trigger: Supabase or PostgREST code review with ev-code-review. Supply exposed-table RLS, policy, and client-filter rules."
+description: "Trigger: implementing or reviewing Supabase or PostgREST. Apply RLS, policy, and client-filter rules before coding or with ev-code-review."
 license: Apache-2.0
 metadata:
   author: "eduardovdev"
@@ -11,8 +11,9 @@ metadata:
 
 ## Activation Contract
 
-Use as an optional `ev-code-review` companion for Supabase access, exposed-table policies, PostgREST
-filtering, and their tests. Supply rules to the active review; do not start another review or delegate.
+Use before implementing Supabase access/policies/PostgREST filters/tests, or as an optional
+`ev-code-review` companion. Load general/domain rules through `ev-coding-standards` for implementation;
+do not start another review or delegate. Review output/check assignments apply only during reviews.
 
 ## Hard Rules
 

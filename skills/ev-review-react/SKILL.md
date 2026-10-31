@@ -1,6 +1,6 @@
 ---
 name: ev-review-react
-description: "Trigger: React components, hooks, or JSX code review with ev-code-review. Supply React structure, state, rendering, and testing rules."
+description: "Trigger: implementing or reviewing React components, hooks, or JSX. Supply structure, state, rendering, and testing rules before coding or with ev-code-review."
 license: Apache-2.0
 metadata:
   author: "eduardovdev"
@@ -11,8 +11,9 @@ metadata:
 
 ## Activation Contract
 
-Use as an optional `ev-code-review` companion for React components, hooks, JSX rendering, and their tests.
-Supply rules to the active review; do not start another review or delegate.
+Use before implementing React components/hooks/JSX/tests, or as an optional `ev-code-review` companion.
+Load general/domain rules through `ev-coding-standards` for implementation; do not start another review
+or delegate. Review output/check assignments apply only during reviews.
 
 ## Hard Rules
 

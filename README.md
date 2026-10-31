@@ -2,6 +2,67 @@
 
 A personal collection of installable agent skills and a catalog of useful skills from other authors.
 
+## Global coding standards
+
+Use a stable local checkout of `EduardoV-dev/my-skills` on `main` as the global source. From its root:
+
+```bash
+git pull --ff-only origin main
+python3 skills/ev-coding-standards/assets/manage.py setup
+```
+
+Setup links every maintained skill into `~/.agents/skills/`, installs four command links under
+`~/.config/opencode/commands/`, and maintains one delimited loader block in the existing global
+`~/.config/opencode/AGENTS.md`. It preserves unrelated content and refuses installation collisions.
+Rerunning setup is safe; it removes only retired skill links owned by this checkout.
+Python 3 and Git are required; Skills CLI discovery additionally requires Node/npm.
+
+**Quit and restart OpenCode after setup or update.** Skill discovery does not load rule bodies:
+the global loader requires `ev-coding-standards` before code edits. It selects complete general,
+frontend/backend, and applicable technology rules based on actual scoped usage, including
+`ev-api-contracts` for API implementation. The same standards are reused for review.
+Project-local same-name skills still take precedence and are reported explicitly; policy conflicts
+and missing required guidance must be resolved before affected edits. Unknown technologies are
+coverage gaps, not permission to invent rules. Other agents can discover `~/.agents/skills/`, but
+need their own global-instruction adapter to require loading before editing.
+
+| OpenCode command | Workflow |
+| --- | --- |
+| `/ev-check [scope]` | Read-only standards review; defaults to working-tree changes, not the last commit. |
+| `/ev-fix [scope]` | Check, minimally fix evidenced scoped violations, verify, and recheck. |
+| `/ev-update` | Require clean `main`, pull fast-forward only, validate, and reconcile global exposure. |
+| `/ev-add-rule <rule>` | Pull before editing; contribute in an isolated worktree and reconcile concurrent upstream changes. |
+
+Natural-language check/fix/update/add-rule requests use the same skill workflows. Keep the active
+checkout on `main`; setup can expose uncommitted changes and reports that dirty state. Update and
+add-rule refuse dirty work. Never switch the active checkout to an unmerged contribution branch.
+If validation fails after an update pulls, report the checked-out revision and repair through a
+contribution; no automatic reset is performed. Loaded instructions can remain stale until restart.
+
+### Contribute a standard
+
+1. Invoke `/ev-add-rule <rule>` or follow the [contribution workflow](skills/ev-coding-standards/references/add-rule.md).
+   The helper pulls latest and creates a sibling `<repo-name>-worktrees/<slug>` on `rules/<slug>`.
+2. Edit the existing rule owner there, preserving exceptions and updating coverage/docs when needed.
+3. Validate before publication. Fetch and rebase unpublished work onto current `origin/main`;
+   merge upstream into already-published branches. Resolve semantic conflicts and rerun checks.
+4. Publish a normal-push PR when authorized. A conflicting policy or two unsuccessful reconciliation
+   rounds stops the workflow with work preserved. No force pushes, resets, or auto-stashing.
+5. After merge, run `/ev-update` to activate the contribution globally.
+
+### Verify the setup
+
+```bash
+python3 skills/ev-coding-standards/assets/manage.py validate
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s skills/ev-coding-standards/tests
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s skills/ev-code-review/tests
+npx skills add . --list
+```
+
+The setup tests use temporary homes and local Git remotes. They verify preservation/idempotence,
+collision handling, safe synchronization, and isolated contribution branches. Agent rule selection
+and semantic conflict resolution require behavioral verification; metadata checks cannot prove them.
+
 ## API implementation rules
 
 Install `ev-api-contracts` to standardize first-party JSON API envelopes and pagination:

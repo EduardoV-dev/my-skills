@@ -1,6 +1,6 @@
 ---
 name: ev-review-postgres
-description: "Trigger: PostgreSQL functions, privileges, or SQL code review with ev-code-review. Supply privileged-function hardening rules."
+description: "Trigger: implementing or reviewing PostgreSQL SQL, functions, or privileges. Apply database hardening rules before coding or with ev-code-review."
 license: Apache-2.0
 metadata:
   author: "eduardovdev"
@@ -11,8 +11,9 @@ metadata:
 
 ## Activation Contract
 
-Use as an optional `ev-code-review` companion for PostgreSQL SQL, functions, migrations, privileges,
-and their tests. Supply rules to the active review; do not start an independent review or delegate.
+Use before implementing PostgreSQL SQL/functions/migrations/privileges/tests, or as an optional
+`ev-code-review` companion. Load general/backend rules through `ev-coding-standards` for implementation;
+do not start an independent review or delegate. Review output/check assignments apply only in reviews.
 
 ## Hard Rules
 

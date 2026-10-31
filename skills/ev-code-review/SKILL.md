@@ -47,7 +47,8 @@ The core works without technology companions.
 2. Read guidance, manifests, configuration, scoped code, and relevant callers/contracts/tests. Assign
    file domains/technologies. Server rendering alone is frontend; server operations require backend too.
 3. Read core references. Discover companions from harness skill lists/registries, otherwise known
-   project/user locations (`.agents/skills`, `.opencode/skills`, `~/.config/opencode/skills`). Resolve
+   project/user locations (`.agents/skills`, `.opencode/skills`, `~/.agents/skills`,
+   `~/.config/opencode/skills`, `~/.claude/skills`). Resolve
    exact paths; never assume sibling installation.
    Match `ev-review-typescript`, `ev-review-react`, `ev-review-nextjs`, `ev-review-nestjs`,
    `ev-review-postgres`, and `ev-review-supabase` (also PostgREST) to scoped usage; read their

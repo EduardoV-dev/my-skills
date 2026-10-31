@@ -1,6 +1,6 @@
 ---
 name: ev-review-nextjs
-description: "Trigger: Next.js code review with ev-code-review. Supply route, rendering, client/server boundary, and public environment rules."
+description: "Trigger: implementing or reviewing Next.js. Supply route, rendering, client/server boundary, and environment rules before coding or with ev-code-review."
 license: Apache-2.0
 metadata:
   author: "eduardovdev"
@@ -11,8 +11,9 @@ metadata:
 
 ## Activation Contract
 
-Use as an optional `ev-code-review` companion for scoped Next.js routes, rendering, Server Actions,
-client/server boundaries, and environment configuration. Supply rules; do not start reviews or delegate.
+Use before implementing Next.js routes/rendering/Server Actions/boundaries/configuration, or as an
+optional `ev-code-review` companion. Load general/domain rules through `ev-coding-standards` for
+implementation; do not start reviews or delegate. Review output/check assignments apply only in reviews.
 
 ## Hard Rules
 

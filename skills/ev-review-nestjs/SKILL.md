@@ -1,6 +1,6 @@
 ---
 name: ev-review-nestjs
-description: "Trigger: NestJS or Nest.js code review with ev-code-review. Check injected-service naming, module layout, and local test folders."
+description: "Trigger: implementing or reviewing NestJS or Nest.js. Apply injected-service naming, module layout, and local test-folder rules before coding or with ev-code-review."
 license: Apache-2.0
 metadata:
   author: "eduardovdev"
@@ -11,8 +11,9 @@ metadata:
 
 ## Activation Contract
 
-Use as an optional `ev-code-review` companion for scoped NestJS modules, classes, injection contracts,
-and tests. Supply technology rules to the active review; do not start an independent review or delegate.
+Use before implementing NestJS modules/classes/injection/tests, or as an optional `ev-code-review`
+companion. Load general/backend rules through `ev-coding-standards` for implementation; do not start an
+independent review or delegate. Review output/check assignments apply only during reviews.
 
 ## Hard Rules
 

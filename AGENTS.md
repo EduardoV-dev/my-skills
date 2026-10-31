@@ -10,6 +10,7 @@
 
 ## Maintained implementation skills
 
+- `skills/ev-coding-standards/SKILL.md` — pre-coding rule selection and global check/fix/update/add-rule workflows.
 - `skills/ev-api-contracts/SKILL.md` — first-party JSON response contracts, pagination decision gate, and validated extensible cursors.
 
 ## Maintained review skills
@@ -22,4 +23,5 @@
 - `skills/ev-review-postgres/SKILL.md` — optional PostgreSQL privileged-function rules.
 - `skills/ev-review-supabase/SKILL.md` — optional Supabase RLS and PostgREST filter rules.
 
-Technology companions extend `ev-code-review`; they do not initiate separate reviews or delegate.
+Technology companions apply before implementation through `ev-coding-standards` and extend
+`ev-code-review` during reviews; they do not initiate separate reviews or delegate.
