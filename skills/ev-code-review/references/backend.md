@@ -3,6 +3,10 @@
 Apply to server operations, API handlers, data access, SQL, server configuration, and their tests.
 Load general rules as well. Shared contracts may require inspection across frontend/backend assignments.
 
+Coverage IDs: `BE-001` input validation/errors; `BE-002` API contracts/pagination; `BE-003`
+injection/query construction; `BE-004` authorization/data isolation; `BE-005` browser-facing security;
+`BE-006` service/operational resilience. Record results using `coverage.md`.
+
 ## Input And Error Boundaries
 
 - Treat route handlers, server-invoked actions, RPC functions, webhooks, file uploads, URL parameters,

@@ -53,25 +53,34 @@ The core works without technology companions.
    `ev-review-postgres`, and `ev-review-supabase` (also PostgREST) to scoped usage; read their
    applicability conditions. Report detected technologies lacking installed coverage, including
    unknown ones; continue with core rules.
-4. Review directly or assign frontend, backend, and—when warranted—cross-cutting contracts/security
-   reviewers. Include shared-only changes; create only useful assignments. Pass exact scope/baseline,
-   file ownership, rule paths, contextual-read permission, and read-only/output contracts. Everyone
-   applies general/security rules; forbid nested delegation. Allow cross-assignment contextual reads.
-   Run shared checks once through the coordinator.
-5. Verify behavior/exceptions; deduplicate defects while retaining affected sites. Recommend minimal
+4. Create a review plan before analysis: list each required reviewer and its applicable check IDs from
+   [Coverage](references/coverage.md). Include shared-only changes; select only useful reviewers. Pass
+   exact scope/baseline, file ownership, rule paths, contextual-read permission, and read-only/output
+   contracts. Everyone applies general/security rules; forbid nested delegation. Allow cross-assignment
+   contextual reads. Run shared checks once through the coordinator.
+5. Review directly or assign frontend, backend, and—when warranted—cross-cutting contracts/security
+   reviewers. Each reviewer returns one result for every assigned check ID, using the coverage contract;
+   findings include stable IDs and evidence. Do not treat omitted checks as passes.
+6. Verify behavior/exceptions; deduplicate defects while retaining affected sites. Recommend minimal
    fixes without speculative abstractions. Check physical line counts/ownership. Run documented
    non-writing checks selected by completion lists; record failures, unavailable checks, incomplete
-   reviewer assignments, and unverified behavior.
+   reviewer assignments, and unverified behavior. Have an independent reviewer challenge high-risk
+   findings or high-risk UNVERIFIED checks when available; otherwise state the gap.
+7. Validate the plan against reviewer results with `python <path-to-ev-code-review>/assets/validate_coverage.py
+   --plan <plan.json> --results <results.json>` when files and Python are available. Do not create or
+   modify repository files for review artifacts. If unavailable, manually compare every planned ID and
+   report that deterministic validation was unavailable.
 
 ## Output Contract
 
-State scope/baseline, applied rules, and direct/parallel mode. Order findings: critical, high, medium,
-low. Include `path:line`, rule section/wording, evidence/impact, and smallest fix; distinguish style
-from behavioral defects. Finish with checks and coverage/verification gaps. State when no violations
-were found.
+State scope/baseline, selected reviewers, applied rules, and direct/parallel mode. Order findings:
+critical, high, medium, low. Include `path:line`, rule section/wording, evidence/impact, and smallest
+fix; distinguish style from behavioral defects. Finish with each planned check's status and evidence,
+deterministic-check results, and coverage/verification gaps. State when no violations were found.
 
 ## References
 
 - [General](references/general.md): always apply; shared code, security, and completion checks.
 - [Frontend](references/frontend.md): UI/browser behavior, security, accessibility, and performance.
 - [Backend](references/backend.md): server validation, access, data, and operational security.
+- [Coverage](references/coverage.md): stable check IDs, evidence statuses, and validator input contract.

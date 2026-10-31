@@ -59,6 +59,7 @@ and tests. Supply technology rules to the active review; do not start an indepen
 ## Output Contract
 
 Return evidence-backed candidates with severity, `path:line`, rule wording, impact, and smallest fix,
-plus checks/gaps. Checklist: constructor injection, property injection, custom-token service
-classification, consistent `Service` suffixes, per-category module layout, and local `__tests__/`
-placement for tests and fixtures. Let `ev-code-review` consolidate the report.
+plus a result for each assigned coverage ID: `NJ-001` injected provider classification/naming;
+`NJ-002` per-category module layout; `NJ-003` local tests and fixtures. Each result must use the shared
+status/evidence contract in `ev-code-review/references/coverage.md`. Let `ev-code-review` consolidate
+the report.

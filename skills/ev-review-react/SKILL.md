@@ -52,6 +52,7 @@ Supply rules to the active review; do not start another review or delegate.
 
 ## Output Contract
 
-Return candidates with severity, `path:line`, rule wording, evidence/impact, and smallest fix, plus gaps.
-Checklist: component count (with exception), readonly typed props, ownership, purposeful hooks, derived
-state, escaped/sanitized rendering, and accessible test queries. The coordinator consolidates findings.
+Return candidates with severity, `path:line`, rule wording, evidence/impact, and smallest fix, plus a
+result for each assigned coverage ID: `RE-001` component ownership/props; `RE-002` hooks, state, and
+derived values; `RE-003` safe rendering, accessibility, and testing. Each result must use the shared
+status/evidence contract in `ev-code-review/references/coverage.md`. The coordinator consolidates findings.

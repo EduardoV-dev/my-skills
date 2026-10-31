@@ -43,6 +43,8 @@ filtering, and their tests. Supply rules to the active review; do not start anot
 
 ## Output Contract
 
-Return candidates with severity, `path:line`, rule wording, evidence/impact, and smallest fix, plus gaps.
-Checklist: exposed-table RLS, operation policies, cross-account isolation, safe filters, and private
-credentials. The coordinator consolidates findings.
+Return candidates with severity, `path:line`, rule wording, evidence/impact, and smallest fix, plus a
+result for each assigned coverage ID: `SB-001` exposed-table RLS and operation policies; `SB-002`
+identity boundaries and cross-account isolation; `SB-003` PostgREST filters and credentials. Each
+result must use the shared status/evidence contract in `ev-code-review/references/coverage.md`.
+The coordinator consolidates findings.

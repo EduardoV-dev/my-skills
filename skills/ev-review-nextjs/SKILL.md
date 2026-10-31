@@ -47,6 +47,8 @@ client/server boundaries, and environment configuration. Supply rules; do not st
 
 ## Output Contract
 
-Return candidates with severity, `path:line`, rule wording, evidence/impact, and smallest fix, plus gaps.
-Checklist: thin routes, justified client boundaries, server-only imports, safe public environment
-accesses, and validated/authorized Server Actions. The coordinator consolidates findings.
+Return candidates with severity, `path:line`, rule wording, evidence/impact, and smallest fix, plus a
+result for each assigned coverage ID: `NX-001` routes, rendering, and client boundaries; `NX-002`
+server-only imports and environment exposure; `NX-003` validation and authorization at server entry
+points. Each result must use the shared status/evidence contract in `ev-code-review/references/coverage.md`.
+The coordinator consolidates findings.

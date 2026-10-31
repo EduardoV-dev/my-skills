@@ -4,6 +4,10 @@ Apply to repository-authored code in every domain. Follow existing patterns unle
 with these rules. Apply technology-specific requirements only to that technology. Resolve paths
 relative to the owning application/package in monorepos; examples do not require new features.
 
+Coverage IDs: `GEN-001` ownership/structure; `GEN-002` correctness/naming/boundaries; `GEN-003`
+configuration/async/side effects; `GEN-004` errors/trust boundaries/security; `GEN-005` tests and
+deterministic checks. Record results using `references/coverage.md`.
+
 ## Priorities
 
 - Correctness, security, accessibility, and data integrity take priority over every other rule.

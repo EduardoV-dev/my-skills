@@ -77,6 +77,7 @@ Supply technology rules to the active review; do not start an independent review
 ## Output Contract
 
 Return evidence-backed candidates with severity, `path:line`, rule wording, impact, and smallest fix,
-plus checks/gaps. Checklist: strictness, exported contracts, contract preservation, necessary narrowing, discriminated states, object
-parameter/return type reuse and size, shorter absolute imports and alias resolution, and environment-module ownership. Let `ev-code-review`
-consolidate the report.
+plus a result for each assigned coverage ID: `TS-001` exported/API contracts; `TS-002` trust,
+narrowing, and state types; `TS-003` function signatures and object types; `TS-004` imports,
+configuration, and environment ownership. Each result must use the shared status/evidence contract in
+`ev-code-review/references/coverage.md`. Let `ev-code-review` consolidate the report.

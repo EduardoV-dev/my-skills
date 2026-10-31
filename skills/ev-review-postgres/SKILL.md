@@ -40,6 +40,7 @@ and their tests. Supply rules to the active review; do not start an independent 
 
 ## Output Contract
 
-Return candidates with severity, `path:line`, rule wording, evidence/impact, and smallest fix, plus gaps.
-Checklist: safe `search_path`, qualified objects, restricted execution, and applicable backend data
-controls. The coordinator consolidates findings.
+Return candidates with severity, `path:line`, rule wording, evidence/impact, and smallest fix, plus a
+result for each assigned coverage ID: `PG-001` privileged functions, safe resolution, and grants;
+`PG-002` SQL safety, data privileges, and isolation. Each result must use the shared status/evidence
+contract in `ev-code-review/references/coverage.md`. The coordinator consolidates findings.
