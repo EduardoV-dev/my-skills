@@ -18,6 +18,16 @@ Supply technology rules to the active review; do not start an independent review
 
 - Preserve the coordinator's scope, baseline, read-only constraints, and general/domain rules.
 - Use strict TypeScript and explicit types at exported boundaries.
+- Prefer absolute imports using established project aliases when the module specifier is shorter than
+  the equivalent relative import, especially for deep `../../` paths. Keep relative imports when shorter
+  or equal; preserve package boundaries and public entry points.
+- Inspect the owning `tsconfig.json`, including inherited settings, and runtime/bundler/test resolution.
+  If alias support is missing, recommend merging `"paths": { "@/*": ["./src/*"] }` into
+  `compilerOptions`, adapting the alias and source root to the project. Do not add `baseUrl` solely for
+  this mapping. TypeScript `paths` does not rewrite emitted imports: recommend the corresponding
+  resolver configuration where needed, and require working resolution before adopting aliases.
+  Once supported, prefer shorter absolute imports in new or changed code. Offer a separate refactor
+  of existing imports; do not expand review scope or edit files without a request.
 - Consume first-party API responses using documented response types. Avoid speculative response-shape
   parsers for repository-owned contracts; handle HTTP and domain errors. This does not remove runtime
   validation of untrusted input required by general rules.
@@ -61,12 +71,12 @@ Supply technology rules to the active review; do not start an independent review
 
 1. Read scoped contracts, consumers, owning TypeScript configuration, and relevant tests.
 2. Check exported types, contract preservation, necessary narrowing, state modeling, response/page contracts and cursor schemas, function parameter/return
-   object shapes, and environment ownership.
+   object shapes, shorter absolute imports and alias resolution, and environment ownership.
 3. Use the project's documented non-writing typecheck when assigned by the coordinator; report gaps.
 
 ## Output Contract
 
 Return evidence-backed candidates with severity, `path:line`, rule wording, impact, and smallest fix,
 plus checks/gaps. Checklist: strictness, exported contracts, contract preservation, necessary narrowing, discriminated states, object
-parameter/return type reuse and size, and environment-module ownership. Let `ev-code-review`
+parameter/return type reuse and size, shorter absolute imports and alias resolution, and environment-module ownership. Let `ev-code-review`
 consolidate the report.
