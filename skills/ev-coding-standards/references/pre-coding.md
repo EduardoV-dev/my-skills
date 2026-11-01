@@ -2,6 +2,8 @@
 
 1. Read the target project's applicable instructions. Inspect the intended files, their owning
    package/configuration, relevant callers/contracts/tests, and actual runtime/technology usage.
+   Inspect the owning project's formatter/linter, installed versions, inherited configuration,
+   scripts, and CI; do not assume a formatter inserts semantic group boundaries.
 2. Resolve `ev-code-review` and companions from the harness registry or known project/user skill
    locations, including `~/.agents/skills/`. Prefer a project-local skill of the same name, as the
    review coordinator already requires. Report shadowing with the exact selected path; never silently
@@ -10,6 +12,8 @@
 3. Read the selected core's complete `references/general.md`. Add `frontend.md` for UI/browser
    behavior and `backend.md` for server/data operations. Shared-only code needs neither; mixed code
    needs both. Server rendering alone is frontend; tests follow their subject.
+   Read its linked `references/logical-code-grouping.md` to select compatible spacing enforcement
+   and distinguish automated checks from semantic grouping review.
 4. Read each applicable technology skill and its exceptions. Determine applicability from scoped
    behavior, imports, directives, and ownership, not installed dependencies alone:
 
@@ -18,7 +22,6 @@
    | TypeScript source/declarations/configuration | `ev-review-typescript` |
    | React components/hooks/JSX; Next.js framework boundaries | `ev-review-react`; `ev-review-nextjs` as applicable |
    | NestJS providers/modules/tests | `ev-review-nestjs` |
-   | PostgreSQL SQL/functions/grants; Supabase/PostgREST access | `ev-review-postgres`; `ev-review-supabase` as applicable |
    | First-party JSON API producers/consumers or pagination implementation | `ev-api-contracts` plus applicable backend/TypeScript rules |
 
 5. State scope, selected rule paths, and the active source revision (`git rev-parse HEAD` and

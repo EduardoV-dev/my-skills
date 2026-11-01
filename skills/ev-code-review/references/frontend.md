@@ -3,8 +3,8 @@
 Apply to UI, browser behavior, and their tests. Load general rules as well. A server-rendered UI still
 uses frontend rules; add backend rules for server operations, not merely its rendering location.
 
-Coverage IDs: `FE-001` UI boundaries/state/rendering; `FE-002` XSS/URL/browser security; `FE-003`
-accessibility; `FE-004` performance. Record results using `coverage.md`.
+Coverage IDs: `frontend-ui-boundaries-state-rendering`; `frontend-xss-url-browser-security`;
+`frontend-accessibility`; `frontend-performance`. Record results using `coverage.md`.
 
 ## UI Boundaries And State
 

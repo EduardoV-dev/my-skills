@@ -19,10 +19,14 @@ Use `EduardoV-dev/my-skills` as the authoritative rule source; installed skills 
 - Read [pre-coding](references/pre-coding.md) before the first code edit and whenever scope expands.
 - Read full applicable rules, including exceptions. Do not copy rules into project instructions or
   infer requirements from names alone. Preserve correctness, security, accessibility, and data integrity.
+- Work in the current agent thread only. Never spawn subagents or parallel reviewers; perform coding,
+  checks, and reviews sequentially.
 - Keep check read-only. Fix only requested scope; never stage, commit, discard, or publish application
   changes as a side effect. Plan-mode requests remain read-only.
-- Keep the active source checkout on `main`; edit rule contributions in sibling worktrees only.
-  Pull latest before rule edits and reconcile upstream again before publication.
+- Keep the active source checkout on `main`; use sibling worktrees for rule contributions unless the
+  user explicitly authorizes direct edits for the current task. For the normal contribution workflow,
+  pull latest before rule edits and reconcile upstream again before publication. A direct-edit exception
+  does not authorize discarding work, publication, or global activation.
 
 ## Decision Gates
 
@@ -37,8 +41,8 @@ Use `EduardoV-dev/my-skills` as the authoritative rule source; installed skills 
 ## Execution Steps
 
 1. Resolve this skill's real path, the source checkout, task scope, and project guidance.
-2. Read the selected workflow and its applicable rules before acting. Respect explicit decisions
-   already supplied, and preserve the API pagination decision gate.
+2. Read the selected workflow, its applicable rules, and the [workflow examples](references/examples.md)
+   before acting. Respect explicit decisions already supplied, and preserve the API pagination decision gate.
 3. Run scoped verification; distinguish successful checks, violations, and unavailable evidence.
 
 ## Output Contract
@@ -52,4 +56,5 @@ For maintenance, report changed revision/links or the contribution worktree and 
 - [Check and fix](references/check-and-fix.md)
 - [Update](references/update.md)
 - [Rule contributions](references/add-rule.md)
+- [Workflow examples and exceptions](references/examples.md)
 - [Management helper](assets/manage.py)

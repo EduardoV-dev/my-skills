@@ -1,6 +1,50 @@
 # My Skills
 
-A personal collection of installable agent skills and a catalog of useful skills from other authors.
+A collection of reusable agent skills for code generation, review, and task-specific workflows in
+any project, plus a catalog of useful skills from other authors. Coding and review share the same
+rules: standards apply before implementation, not only when a review is requested.
+
+## Wire skills into a project
+
+1. From the target project, install the setup skill and coding core for your agent:
+
+   ```bash
+   npx skills add EduardoV-dev/my-skills \
+     --skill ev-project-setup \
+     --skill ev-coding-standards \
+     --skill ev-code-review
+   ```
+
+   Select the technology companions your project needs; see [available companions](#install-review-skills).
+   Existing global installations can also supply these skills; a second installation is not required.
+2. Quit and restart your agent, then ask: **“Use ev-project-setup to wire the installed skills into
+   this project.”** It resolves available skills, checks project guidance, and adds one managed block
+   to the project's root `AGENTS.md`, preserving unrelated instructions.
+3. Start a fresh session (quit and restart OpenCode). Request your normal task: matching skills must
+   load before work, including coding standards before edits and relevant rules when scope changes.
+
+The block selects skills by their activation descriptions, so future installed skills can apply to
+documentation, testing, or other tasks without rewriting the loader. It does not load every skill
+body every session. Project-local skills take precedence; missing required guidance and policy
+conflicts are surfaced before affected edits. Setup does not silently install or overwrite skills.
+
+The helper can also maintain/check the block directly once the core skills are available:
+
+```bash
+python3 <installed-ev-project-setup>/assets/setup_project.py "/path/to/project"
+python3 <installed-ev-project-setup>/assets/setup_project.py "/path/to/project" --check
+```
+
+It requires Python 3 and an existing target directory. `--check` is read-only and returns 1 for
+missing/outdated wiring or errors. The helper only manages instructions; it does not verify skill
+availability or agent compliance. See [setup and behavioral checks](skills/ev-project-setup/references/setup.md).
+This adapter applies to agents that read `AGENTS.md`; other instruction formats need their own adapter.
+The global OpenCode setup below is separate and remains useful for personal defaults across projects.
+
+Shared formatting rules include [`general-logical-code-grouping`](skills/ev-code-review/references/logical-code-grouping.md):
+separate meaningful processing phases while keeping related statements together. Setup and pre-coding
+inspect the target project's existing formatter/linter for compatible enforcement; semantic grouping
+still requires generation-time judgment and review.
 
 ## Global coding standards
 
@@ -31,18 +75,23 @@ need their own global-instruction adapter to require loading before editing.
 | `/ev-check [scope]` | Read-only standards review; defaults to working-tree changes, not the last commit. |
 | `/ev-fix [scope]` | Check, minimally fix evidenced scoped violations, verify, and recheck. |
 | `/ev-update` | Require clean `main`, pull fast-forward only, validate, and reconcile global exposure. |
-| `/ev-add-rule <rule>` | Pull before editing; contribute in an isolated worktree and reconcile concurrent upstream changes. |
+| `/ev-add-rule <rule>` | Follow the contribution workflow; use a worktree by default, or explicitly authorized task-scoped direct edits. |
 
 Natural-language check/fix/update/add-rule requests use the same skill workflows. Keep the active
 checkout on `main`; setup can expose uncommitted changes and reports that dirty state. Update and
-add-rule refuse dirty work. Never switch the active checkout to an unmerged contribution branch.
+the default add-rule helper refuse dirty work. An explicitly authorized direct-edit exception applies
+only to the current contribution task; preserve existing changes and do not infer publication or
+activation permission. It does not bypass the update helper's safety checks. Never switch the active
+checkout to an unmerged contribution branch.
 If validation fails after an update pulls, report the checked-out revision and repair through a
 contribution; no automatic reset is performed. Loaded instructions can remain stale until restart.
 
 ### Contribute a standard
 
 1. Invoke `/ev-add-rule <rule>` or follow the [contribution workflow](skills/ev-coding-standards/references/add-rule.md).
-   The helper pulls latest and creates a sibling `<repo-name>-worktrees/<slug>` on `rules/<slug>`.
+   By default, the helper pulls latest and creates a sibling `<repo-name>-worktrees/<slug>` on `rules/<slug>`.
+   If direct edits are explicitly authorized for this task, follow the documented exception instead;
+   steps involving the contribution worktree apply only to the default workflow.
 2. Edit the existing rule owner there, preserving exceptions and updating coverage/docs when needed.
 3. Validate before publication. Fetch and rebase unpublished work onto current `origin/main`;
    merge upstream into already-published branches. Resolve semantic conflicts and rerun checks.
@@ -56,12 +105,15 @@ contribution; no automatic reset is performed. Loaded instructions can remain st
 python3 skills/ev-coding-standards/assets/manage.py validate
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s skills/ev-coding-standards/tests
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s skills/ev-code-review/tests
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s skills/ev-project-setup/tests
 npx skills add . --list
 ```
 
 The setup tests use temporary homes and local Git remotes. They verify preservation/idempotence,
 collision handling, safe synchronization, and isolated contribution branches. Agent rule selection
 and semantic conflict resolution require behavioral verification; metadata checks cannot prove them.
+Project wiring tests additionally cover byte-preserving updates, malformed markers, symlinks,
+paths containing spaces, and read-only drift detection.
 
 ## API implementation rules
 
@@ -93,9 +145,7 @@ automatically select the core when you select a companion.
 | `ev-review-typescript` | TypeScript contracts, narrowing, and environment-module conventions |
 | `ev-review-react` | React components, hooks, state, safe rendering, and applicable UI testing |
 | `ev-review-nextjs` | Next.js routes, rendering, Server Actions, and client/server environment boundaries |
-| `ev-review-nestjs` | NestJS injected-service naming, per-category module layout, and local `__tests__/` placement |
-| `ev-review-postgres` | PostgreSQL privileged functions, safe resolution paths, and execution grants |
-| `ev-review-supabase` | Supabase RLS/policies, cross-account isolation, and PostgREST filters |
+| `ev-review-nestjs` | NestJS injected-service naming, supporting folders, controller/service grouping, colocated tests, and module-owned fixtures |
 
 For explicit selection, for example in a React + TypeScript project:
 
@@ -124,10 +174,10 @@ Missing companions are reported as technology-specific coverage gaps. The core c
 with its bundled rules and does not install anything automatically. Add a companion when that coverage
 is needed. Keep optional companions alongside the core in the same installation scope when possible.
 
-Small or tightly coupled reviews run directly. Substantial, separable reviews may use up to three
-parallel reviewers when the agent supports delegation. The coordinator verifies and deduplicates their
-findings into one report; companions never spawn additional reviewers. Parallelism can reduce elapsed
-time but generally uses more tokens. Reviews remain read-only unless fixes are requested.
+Reviews run in the current agent thread regardless of size. The coordinator evaluates applicable
+general, domain, and technology checks sequentially and consolidates them into one report. Maintained
+skills do not spawn subagents or parallel reviewers. Reviews remain read-only unless fixes are
+requested.
 
 ## Repository layout
 

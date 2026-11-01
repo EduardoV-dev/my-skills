@@ -8,12 +8,14 @@ from validate_coverage import validate
 
 class CoverageValidatorTests(unittest.TestCase):
     def setUp(self):
-        self.plan = {"reviewers": [{"id": "core", "check_ids": ["GEN-004"]}]}
+        self.plan = {"reviewers": [{
+            "id": "core", "check_ids": ["general-errors-trust-boundaries-security"]
+        }]}
         self.results = {
             "reviewers": [{"id": "core", "files_reviewed": ["src/auth.ts"]}],
             "checks": [{
                 "reviewer_id": "core",
-                "id": "GEN-004",
+                "id": "general-errors-trust-boundaries-security",
                 "status": "PASS",
                 "evidence": "src/auth.ts:10-20",
             }],
@@ -25,20 +27,27 @@ class CoverageValidatorTests(unittest.TestCase):
 
     def test_reports_missing_check_result(self):
         self.results["checks"] = []
-        self.assertIn("missing check result: GEN-004", validate(self.plan, self.results))
+        self.assertIn(
+            "missing check result: general-errors-trust-boundaries-security",
+            validate(self.plan, self.results),
+        )
 
     def test_pass_requires_evidence(self):
         self.results["checks"] = [{
-            "reviewer_id": "core", "id": "GEN-004", "status": "PASS"
+            "reviewer_id": "core", "id": "general-errors-trust-boundaries-security", "status": "PASS"
         }]
         errors = validate(self.plan, self.results)
-        self.assertIn("check GEN-004: PASS requires evidence", errors)
+        self.assertIn("check general-errors-trust-boundaries-security: PASS requires evidence", errors)
 
     def test_fail_requires_a_known_finding(self):
         check = self.results["checks"][0]
-        check.update(status="FAIL", finding_ids=["F-1"])
+        check.update(status="FAIL", finding_ids=["missing-resource-ownership"])
         errors = validate(self.plan, self.results)
-        self.assertIn("check GEN-004: unknown finding ID F-1", errors)
+        self.assertIn(
+            "check general-errors-trust-boundaries-security: "
+            "unknown finding ID missing-resource-ownership",
+            errors,
+        )
 
 
 if __name__ == "__main__":

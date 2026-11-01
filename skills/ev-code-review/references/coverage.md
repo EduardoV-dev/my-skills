@@ -1,26 +1,36 @@
 # Review Coverage Contract
 
-Build the plan before assigning review work. Select only applicable checks; record why a category is
-`NOT_APPLICABLE` rather than omitting it. IDs are stable categories, not a claim that every individual
-rule was mechanically proven.
+Build the plan before analysis. Select checks relevant to the requested scope; technologies outside
+scope need no placeholder groups or results. Every planned check must receive exactly one result.
+If a planned check is later found inapplicable, retain it with `NOT_APPLICABLE` and a reason rather
+than silently dropping it. IDs are stable categories, not proof of every individual rule.
+Use descriptive lowercase kebab-case check IDs prefixed by domain or technology, never numeric sequences.
+Keep each ID tied to its meaning rather than its position; use the same slug in rules, plans, and results.
 
 ## Check inventory
 
 | Reviewer | Check IDs and scope |
 | --- | --- |
-| `core` | `GEN-001` ownership/structure; `GEN-002` correctness/naming/boundaries; `GEN-003` configuration/async/side effects; `GEN-004` errors/trust boundaries/security; `GEN-005` tests and deterministic checks |
-| `frontend` | `FE-001` UI boundaries/state/rendering; `FE-002` XSS/URL/browser security; `FE-003` accessibility; `FE-004` performance |
-| `backend` | `BE-001` input validation/errors; `BE-002` API contracts/pagination; `BE-003` injection/query construction; `BE-004` authorization/data isolation; `BE-005` browser-facing security; `BE-006` service/operational resilience |
-| `typescript` | `TS-001` exported and API contracts; `TS-002` trust/narrowing/state types; `TS-003` function signatures and object types; `TS-004` imports/configuration/environment boundary |
-| `react` | `RE-001` component ownership/props; `RE-002` hooks/state/derived values; `RE-003` safe rendering/accessibility/testing |
-| `nextjs` | `NX-001` routes/rendering/client boundaries; `NX-002` server-only imports/environment exposure; `NX-003` server entry-point validation/authorization |
-| `nestjs` | `NJ-001` injected provider classification/naming; `NJ-002` module layout; `NJ-003` tests and fixtures |
-| `postgres` | `PG-001` privileged functions/resolution/grants; `PG-002` SQL/data privileges/isolation |
-| `supabase` | `SB-001` exposed-table RLS/operation policies; `SB-002` identity and cross-account isolation; `SB-003` PostgREST filters/credentials |
+| `core` | `general-ownership-structure`; `general-correctness-naming-boundaries`; `general-configuration-async-side-effects`; `general-errors-trust-boundaries-security`; `general-tests-verification` |
+| `frontend` | `frontend-ui-boundaries-state-rendering`; `frontend-xss-url-browser-security`; `frontend-accessibility`; `frontend-performance` |
+| `backend` | `backend-input-validation-errors`; `backend-api-contracts-pagination`; `backend-injection-query-construction`; `backend-authorization-data-isolation`; `backend-browser-facing-security`; `backend-service-operational-resilience` |
+| `typescript` | `typescript-exported-api-contracts`; `typescript-trust-narrowing-state-types`; `typescript-function-signatures-object-types`; `typescript-imports-configuration-environment` |
+| `react` | `react-component-ownership-props`; `react-hooks-state-derived-values`; `react-safe-rendering-accessibility-testing` |
+| `nextjs` | `nextjs-routes-rendering-client-boundaries`; `nextjs-server-only-imports-environment`; `nextjs-server-entry-validation-authorization` |
+| `nestjs` | `nestjs-injected-provider-naming`; `nestjs-module-layout`; `nestjs-colocated-tests-module-fixtures` |
 
-Select `core` for every review, plus applicable domain and installed technology companions. A check may
-be split into multiple assigned checks only when different files or reviewers need separate evidence.
-Do not mark a reviewer selected merely because its technology is installed.
+Select `core` for every review, plus applicable domain and installed technology companions. Select the
+relevant check IDs within those groups; justify exclusions during planning rather than omitting a
+required check for convenience. Do not select a group merely because its technology is installed.
+The legacy JSON field `reviewers` names logical check groups evaluated sequentially by the same agent,
+not additional agents. Preserve this format for validator compatibility; do not delegate.
+
+```text
+// Avoid: add React placeholder results to a plain TypeScript-only review.
+// Also avoid: remove a planned pagination check after discovering there is no pagination in scope.
+// Prefer: leave React unselected; retain the planned pagination check as NOT_APPLICABLE with a reason
+// that the scoped endpoint returns one resource. Other planned checks still need their own results.
+```
 
 ## Check result statuses
 
@@ -31,7 +41,7 @@ Do not mark a reviewer selected merely because its technology is installed.
 - `UNVERIFIED`: include the missing evidence or limitation. Revisit high-risk cases or report them as
   open coverage gaps.
 
-Each reviewer returns its ID and files reviewed, plus exactly one result for every planned check ID.
+Each logical check group records its ID and files reviewed, plus one result for every planned check ID.
 Each finding has a unique ID, severity, file/line, evidence, impact, and minimal fix. Consolidation may
 deduplicate findings, but must preserve all related check IDs and affected sites.
 
@@ -43,8 +53,8 @@ and status-specific `evidence`, `reason`, or `finding_ids`), and `findings` (eac
 Findings also carry severity, file/line, evidence, impact, and a minimal fix. Example:
 
 ```bash
-{"reviewers":[{"id":"core","check_ids":["GEN-004"]}]}
-{"reviewers":[{"id":"core","files_reviewed":["src/auth.ts"]}],"checks":[{"reviewer_id":"core","id":"GEN-004","status":"FAIL","evidence":"src/auth.ts:42: ownership is not checked before the read","finding_ids":["F-001"]}],"findings":[{"id":"F-001","severity":"HIGH","file":"src/auth.ts","line":42,"evidence":"...","impact":"...","fix":"..."}]}
+{"reviewers":[{"id":"core","check_ids":["general-errors-trust-boundaries-security"]}]}
+{"reviewers":[{"id":"core","files_reviewed":["src/auth.ts"]}],"checks":[{"reviewer_id":"core","id":"general-errors-trust-boundaries-security","status":"FAIL","evidence":"src/auth.ts:42: ownership is not checked before the read","finding_ids":["missing-resource-ownership"]}],"findings":[{"id":"missing-resource-ownership","severity":"HIGH","file":"src/auth.ts","line":42,"evidence":"...","impact":"...","fix":"..."}]}
 ```
 
 See the validator's error messages for required fields. Run `python <path-to-ev-code-review>/assets/validate_coverage.py

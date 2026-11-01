@@ -19,7 +19,7 @@ export type OffsetPage<T> = {
   meta: {
     hasNextPage: boolean;
     hasPreviousPage: boolean;
-    total: number;
+    totalItems: number;
     page: number;
     pageSize: number;
   };
@@ -49,8 +49,13 @@ Both branches include a string `message`. Keep client errors free of internal de
 ## Pagination Semantics
 
 - Use one-based offset pages. Validate positive integer `page` and bounded positive integer `pageSize`.
-  Compute `total` over the authorized, filtered dataset before pagination. Derive flags from that total
-  and the requested page; apply deterministic ordering with a unique tie-breaker.
+  Compute `totalItems` over the authorized, filtered dataset before pagination, not from the returned
+  page length. Derive flags from that count and the requested page; apply deterministic ordering with
+  a unique tie-breaker.
+- Empty datasets and valid pages beyond the dataset return successful empty pages with the actual
+  `totalItems` and unchanged requested `page`. `hasNextPage` means later items exist
+  (`page * pageSize < totalItems`); `hasPreviousPage` means earlier items exist
+  (`page > 1 && totalItems > 0`), not necessarily a nonempty immediately preceding page.
 - Emit `nextCursor: null` at the end, including empty pages. When requested, emit `prevCursor: null`
   at the beginning. Determine whether another page exists; do not infer it from a full page alone.
 - Keep filters, authorization, and ordering consistent across page queries. Cursors never grant access.
@@ -64,9 +69,18 @@ Both branches include a string `message`. Keep client errors free of internal de
   Infer cursor payload types from schemas instead of maintaining separate unchecked types.
 - Expose shared `encodeCursor` and `decodeCursor` methods that accept the selected schema and infer
   its payload type. Validate before encoding and after decoding; reuse the base schema by default.
-- Use a consistent URL-safe encoding supported by the target runtime. Normalize malformed encoding,
-  JSON, or Zod failures into the API validation-error contract; never let them become unhandled errors.
+- Use a consistent URL-safe encoding supported by the target runtime. Recognized malformed incoming
+  encoding, JSON, or Zod payload failures use the API validation-error contract and appropriate client
+  status. Invalid server-generated payloads or unexpected utility defects use a safe internal-error
+  response/status with diagnostic evidence; do not blame the caller or expose internal details.
+  Preserve original causes when wrapping errors; neither case may become an unhandled failure.
 - Match payload fields, sort direction, and query comparisons. For descending `(createdAt, id)`,
   advance with `createdAt < cursor.createdAt OR (createdAt = cursor.createdAt AND id < cursor.id)`;
   invert comparisons for ascending traversal. Implement reverse traversal only when requested,
-  restoring the documented item order before responding.
+  restoring the documented item order before responding. For backward traversal of a descending feed,
+  seek newer rows with `>` comparisons in ascending query order, trim the lookahead row, then reverse
+  returned items. Build `prevCursor` from the first returned item only when an earlier page exists;
+  build `nextCursor` from the last returned item only when a later page exists. Verify the opposite
+  direction with an existence check when lookahead does not establish it; an incoming cursor alone
+  does not prove that rows still exist. See the [backward traversal example](../references/examples.md#backward-traversal-of-a-descending-feed)
+  for anchors and boundaries.

@@ -18,7 +18,8 @@ an independent review or delegate. Review output/check assignments apply only du
 ## Hard Rules
 
 - Preserve the coordinator's scope, baseline, read-only constraints, and general/domain rules.
-- Use strict TypeScript and explicit types at exported boundaries.
+- Use strict TypeScript. Explicitly type exported function parameters and return values; ordinary
+  exported constants may use inference. Preserve framework-required, overloaded, and generic contracts.
 - Prefer absolute imports using established project aliases when the module specifier is shorter than
   the equivalent relative import, especially for deep `../../` paths. Keep relative imports when shorter
   or equal; preserve package boundaries and public entry points.
@@ -30,8 +31,8 @@ an independent review or delegate. Review output/check assignments apply only du
   Once supported, prefer shorter absolute imports in new or changed code. Offer a separate refactor
   of existing imports; do not expand review scope or edit files without a request.
 - Consume first-party API responses using documented response types. Avoid speculative response-shape
-  parsers for repository-owned contracts; handle HTTP and domain errors. This does not remove runtime
-  validation of untrusted input required by general rules.
+  parsers for repository-owned contracts; handle HTTP and domain errors. Crossing an HTTP boundary alone
+  does not require a new parser. Preserve required ingress validation from general rules.
 - Require shared exported `ApiError = { code: string; message: string; field?: string }` and
   `ApiResponse<T> = { ok: true; data: T; error: []; message: string } | { ok: false; data: null; error: ApiError[]; message: string }`.
   Use these types across first-party JSON API producers/consumers, including paginated payloads;
@@ -39,22 +40,31 @@ an independent review or delegate. Review output/check assignments apply only du
 - Check offset/cursor page types against backend metadata rules. Infer cursor types from extendable
   Zod object schemas; require schema-aware shared encode/decode methods without unchecked assertions.
 - Avoid `any`. Preserve established TypeScript contracts throughout the call chain: accept and use
-  concrete interfaces and types directly. Do not widen known values to `unknown`, replace them with
-  generic records, repeat checks guaranteed by their contracts, or add handwritten parsers that
-  reconstruct the same guarantees.
-- Use `unknown` and runtime validation where values genuinely lack an established contract, such as
-  untrusted external input. Type annotations alone do not validate that input. Preserve checks for
-  conditions the declared contract does not guarantee, including decoded content, business invariants,
-  and authorization. Avoid assertions unless runtime validation or a documented invariant justifies them.
+  existing DTOs, response types, SDK types, and workflow contracts directly. Reserve `unknown` for values
+  genuinely lacking a trustworthy contract. Do not widen known values to `unknown`, replace them with
+  generic records, repeat guaranteed checks, or reconstruct the same guarantees with handwritten parsers.
+  Flag `unknown` combined with `typeof`, property checks, or shape detection when an existing contract
+  already supplies those guarantees; those checks are not a smell at genuinely uncontracted boundaries.
+- Type annotations alone do not validate input. Preserve required validation at untrusted ingress and
+  checks outside the declared guarantees, including decoded content, business invariants, and authorization.
+  Prefer narrowing or parsing when validation is needed. Allow assertions only when runtime validation
+  or an independently established, documented invariant justifies them; a comment alone is not evidence.
 - Avoid double assertions such as `value as unknown as Memory`. When an assertion is justified, use a
   direct assertion such as `value as Memory`; if it is rejected, fix or validate the value rather
   than bypassing the type compatibility check.
-- Use discriminated unions for mutually exclusive states instead of combinations of optional fields.
-- Prefer one object parameter destructured directly in the function signature over multiple positional
-  parameters. Do not name the object parameter `options` or `params` and access its properties in the body.
-  Use an inline object type for parameter or return objects with one or two properties; use a named `<FunctionName>Params`
-  or `<FunctionName>Return` type for three or more properties. Use a named type at any size when
-  another function reuses or extends that contract. Assess parameter and return objects separately.
+- Use discriminated unions when valid properties depend on mutually exclusive states. Independent optional
+  fields do not require a union; do not invent states the feature does not have.
+- For one input, use a directly typed positional parameter. For two or more inputs, use one object
+  destructured in the signature with a named `<FunctionName>Params` type, using PascalCase for the type.
+  Do not keep an `options` or `params` object and access its properties in the body. Preserve externally
+  required signatures, including framework and native callbacks.
+- Return a single value directly using its existing type. When combining multiple outputs, return an
+  object with a named `<FunctionName>Return` type, using PascalCase. An existing entity or collection
+  counts as one value even if it has multiple fields or elements; do not add a wrapper or redundant alias.
+  Assess inputs and outputs separately and preserve existing shared contracts rather than duplicating them.
+  Count independently supplied inputs and combined outputs, not wrappers: a newly constructed parameter
+  or result bundle is not an existing domain contract merely because it is one object. Use named
+  `Params`/`Return` types for those bundles; see the contrasting examples.
 - If the owning application/package has no environment constants module, recommend
   `src/constants/environment-variables.ts`. Reuse an established module even at another path; preserve
   the general configuration-boundary exceptions and evaluation timing.
@@ -67,10 +77,12 @@ an independent review or delegate. Review output/check assignments apply only du
 | JavaScript-only code or TypeScript merely installed | Do not apply TypeScript requirements. |
 | Untrusted runtime input | Apply general validation rules; static types are not validation. |
 | Value with an established concrete contract | Preserve its type; flag redundant widening, validation, and parsing without removing checks outside its guarantees. |
+| One input/output versus multiple inputs/outputs | Use direct values for one; named `Params`/`Return` object contracts for multiple, subject to existing-contract and external-signature exceptions. |
 
 ## Execution Steps
 
-1. Read scoped contracts, consumers, owning TypeScript configuration, and relevant tests.
+1. Read scoped contracts, consumers, owning TypeScript configuration, relevant tests, and the
+   [rule examples and exceptions](references/examples.md).
 2. Check exported types, contract preservation, necessary narrowing, state modeling, response/page contracts and cursor schemas, function parameter/return
    object shapes, shorter absolute imports and alias resolution, and environment ownership.
 3. Use the project's documented non-writing typecheck when assigned by the coordinator; report gaps.
@@ -78,7 +90,12 @@ an independent review or delegate. Review output/check assignments apply only du
 ## Output Contract
 
 Return evidence-backed candidates with severity, `path:line`, rule wording, impact, and smallest fix,
-plus a result for each assigned coverage ID: `TS-001` exported/API contracts; `TS-002` trust,
-narrowing, and state types; `TS-003` function signatures and object types; `TS-004` imports,
-configuration, and environment ownership. Each result must use the shared status/evidence contract in
+plus a result for each assigned coverage ID: `typescript-exported-api-contracts`;
+`typescript-trust-narrowing-state-types`; `typescript-function-signatures-object-types`;
+`typescript-imports-configuration-environment`. Each result must use the shared status/evidence contract in
 `ev-code-review/references/coverage.md`. Let `ev-code-review` consolidate the report.
+
+## References
+
+- [Rule examples and exceptions](references/examples.md): exported contracts, contract preservation,
+  assertions, state modeling, and parameter/return conventions.

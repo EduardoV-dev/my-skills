@@ -2,6 +2,12 @@
 
 ## Before Any Rule Edit
 
+The workflow below is the default. If the user explicitly authorizes direct edits in the original
+checkout for the current task, edit there without requiring a clean checkout, creating a worktree,
+or pulling over local work. Preserve existing changes, read applicable guidance, and run scoped
+validation. This exception does not authorize commits, publication, or global activation; report the
+actual checkout/revision and activation state. See the [workflow examples](examples.md).
+
 1. Resolve the active source checkout. Require a clean `main` and the expected origin. Choose a short
    lowercase kebab-case slug describing the rule, then run:
 
@@ -36,5 +42,8 @@
 5. Contributions become globally active only after merge and `ev-update`. Do not repoint global links
    to an unmerged branch. Report validation, branch/worktree, PR/publication state, and activation state.
 
-If the source checkout is dirty (including an uncommitted setup), stop before starting a contribution;
-the owner must resolve that work first. Never commit unrelated work to unblock this workflow.
+Without an explicit direct-edit exception, if the source checkout is dirty (including an uncommitted
+setup), stop before starting a contribution; the owner must resolve that work first. Never commit
+unrelated work to unblock this workflow. These contribution prerequisites do not block unrelated
+application implementation; record the loaded standards revision/dirty state and resolve relevant
+guidance conflicts before affected edits.

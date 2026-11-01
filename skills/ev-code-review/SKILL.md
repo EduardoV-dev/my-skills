@@ -1,6 +1,6 @@
 ---
 name: ev-code-review
-description: "Trigger: code review, review changes, code-style compliance. Route shared, frontend, backend, and installed technology rules; coordinate scoped reviewers."
+description: "Trigger: code review, code generation standards, code-style compliance. Supply pre-coding rules and run scoped reviews sequentially."
 license: Apache-2.0
 metadata:
   author: "eduardovdev"
@@ -11,6 +11,8 @@ metadata:
 
 ## Activation Contract
 
+For implementation, reuse the applicable rules through `ev-coding-standards` before code edits;
+review execution and coverage artifacts apply when reviewing, including the completion review.
 Review explicit scope; otherwise staged, unstaged, and untracked non-ignored working-tree changes.
 The core works without technology companions.
 
@@ -19,6 +21,9 @@ The core works without technology companions.
 - Read complete applicable references/companions, including exceptions; never substitute summaries or
   preferences. Prioritize correctness, security, accessibility, and data integrity.
 - Remain read-only unless fixes are requested. Never stage, commit, or discard changes.
+  Inspect check side effects; use the general verification policy for caches, artifacts, and isolation.
+- Review in the current agent thread only. Never spawn subagents or parallel reviewers; perform
+  applicable domain and technology checks sequentially.
 - Report evidenced violations in scope; contextual inspection is not an unrelated audit. For diffs,
   report introduced/worsened violations; for whole-file/repository scopes, assess all authored scoped code.
 - Classify behavior, runtime, imports, directives, and ownership—not extensions or installed dependencies
@@ -35,8 +40,7 @@ The core works without technology companions.
 | Default scope; clean working tree | Report no changes; do not switch to the latest commit. |
 | No Git repository and no explicit scope | Ask for scope before reviewing. |
 | UI/browser, server/data, shared, or mixed code | Load general plus frontend, backend, neither, or both respectively. |
-| Small/tightly coupled scope or no delegation support | Review directly. |
-| Substantial scope with independent assignments | Use up to three parallel scoped reviewers. |
+| Any scope, including substantial or separable assignments | Review directly in the current agent thread; do not delegate. |
 
 ## Execution Steps
 
@@ -50,23 +54,23 @@ The core works without technology companions.
    project/user locations (`.agents/skills`, `.opencode/skills`, `~/.agents/skills`,
    `~/.config/opencode/skills`, `~/.claude/skills`). Resolve
    exact paths; never assume sibling installation.
-   Match `ev-review-typescript`, `ev-review-react`, `ev-review-nextjs`, `ev-review-nestjs`,
-   `ev-review-postgres`, and `ev-review-supabase` (also PostgREST) to scoped usage; read their
-   applicability conditions. Report detected technologies lacking installed coverage, including
-   unknown ones; continue with core rules.
-4. Create a review plan before analysis: list each required reviewer and its applicable check IDs from
-   [Coverage](references/coverage.md). Include shared-only changes; select only useful reviewers. Pass
-   exact scope/baseline, file ownership, rule paths, contextual-read permission, and read-only/output
-   contracts. Everyone applies general/security rules; forbid nested delegation. Allow cross-assignment
-   contextual reads. Run shared checks once through the coordinator.
-5. Review directly or assign frontend, backend, and—when warranted—cross-cutting contracts/security
-   reviewers. Each reviewer returns one result for every assigned check ID, using the coverage contract;
-   findings include stable IDs and evidence. Do not treat omitted checks as passes.
+   Match `ev-review-typescript`, `ev-review-react`, `ev-review-nextjs`, and `ev-review-nestjs` to scoped
+   usage; read their applicability conditions. Report detected technologies lacking installed coverage,
+   including unknown ones; continue with core rules.
+4. Create an internal review plan before analysis: list each applicable domain/technology check ID from
+   [Coverage](references/coverage.md). Unselected technologies need no placeholder results; every planned
+   check needs a result, including `NOT_APPLICABLE` if later found inapplicable. Include shared-only changes. Keep
+   the plan and all analysis in this agent thread; do not create subagents or delegate assignments.
+   Run shared checks once, then domain and technology checks sequentially, applying general/security
+   rules throughout. Read contextual files as needed within the requested scope.
+5. Evaluate each planned check directly and record one result using the coverage contract; findings
+   include stable IDs and evidence. Do not treat omitted checks as passes.
 6. Verify behavior/exceptions; deduplicate defects while retaining affected sites. Recommend minimal
    fixes without speculative abstractions. Check physical line counts/ownership. Run documented
-   non-writing checks selected by completion lists; record failures, unavailable checks, incomplete
-   reviewer assignments, and unverified behavior. Have an independent reviewer challenge high-risk
-   findings or high-risk UNVERIFIED checks when available; otherwise state the gap.
+   checks permitted by the general read-only verification policy; record failures, unavailable checks,
+   incomplete check groups, and unverified behavior. Challenge high-risk findings and `UNVERIFIED` checks
+   in this agent by checking callers, exceptions, and counterexamples. Do not spawn another reviewer or
+   describe this self-check as independent review; state that independent review was not performed.
 7. Validate the plan against reviewer results with `python <path-to-ev-code-review>/assets/validate_coverage.py
    --plan <plan.json> --results <results.json>` when files and Python are available. Do not create or
    modify repository files for review artifacts. If unavailable, manually compare every planned ID and
@@ -74,7 +78,8 @@ The core works without technology companions.
 
 ## Output Contract
 
-State scope/baseline, selected reviewers, applied rules, and direct/parallel mode. Order findings:
+State scope/baseline, selected check groups, applied rules, and that review ran in one agent thread.
+Order findings:
 critical, high, medium, low. Include `path:line`, rule section/wording, evidence/impact, and smallest
 fix; distinguish style from behavioral defects. Finish with each planned check's status and evidence,
 deterministic-check results, and coverage/verification gaps. State when no violations were found.
