@@ -23,7 +23,7 @@
 - `skills/ev-review-typescript/SKILL.md` — optional TypeScript contract rules.
 - `skills/ev-review-react/SKILL.md` — optional React component, hook, and rendering rules.
 - `skills/ev-review-nextjs/SKILL.md` — optional Next.js route and client/server boundary rules.
-- `skills/ev-review-nestjs/SKILL.md` — optional NestJS injected-service naming, module layout, colocated tests, and module-owned fixture rules.
+- `skills/ev-review-nestjs/SKILL.md` — optional NestJS plural grouping, DTO/global validation, API/docs setup, health contracts, injected-service naming, and test ownership rules.
 
 Technology companions apply before implementation through `ev-coding-standards` and extend
 `ev-code-review` during reviews; they do not initiate separate reviews or delegate. Maintained skills

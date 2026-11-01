@@ -150,7 +150,7 @@ automatically select the core when you select a companion.
 | `ev-review-typescript` | TypeScript contracts, narrowing, and environment-module conventions |
 | `ev-review-react` | React components, hooks, state, safe rendering, and applicable UI testing |
 | `ev-review-nextjs` | Next.js routes, rendering, Server Actions, and client/server environment boundaries |
-| `ev-review-nestjs` | NestJS injected-service naming, supporting folders, controller/service grouping, colocated tests, and module-owned fixtures |
+| `ev-review-nestjs` | NestJS plural grouping, validated body DTOs, global validation, `/api`, OpenAPI/Scalar at `/docs`, health contracts, injected-service naming, and test ownership |
 
 For explicit selection, for example in a React + TypeScript project:
 

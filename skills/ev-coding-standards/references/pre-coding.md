@@ -21,7 +21,7 @@
    | --- | --- |
    | TypeScript source/declarations/configuration | `ev-review-typescript` |
    | React components/hooks/JSX; Next.js framework boundaries | `ev-review-react`; `ev-review-nextjs` as applicable |
-   | NestJS providers/modules/tests | `ev-review-nestjs` |
+   | NestJS providers/modules/endpoints/bootstrap/tests | `ev-review-nestjs` |
    | First-party JSON API producers/consumers or pagination implementation | `ev-api-contracts` plus applicable backend/TypeScript rules |
 
 5. Record internally the scope, selected rule paths, and active source revision (`git rev-parse HEAD` and
