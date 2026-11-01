@@ -44,6 +44,10 @@ not additional agents. Preserve this format for validator compatibility; do not 
 Each logical check group records its ID and files reviewed, plus one result for every planned check ID.
 Each finding has a unique ID, severity, file/line, evidence, impact, and minimal fix. Consolidation may
 deduplicate findings, but must preserve all related check IDs and affected sites.
+For explicit review/check/fix requests, render every consolidated finding in chat with its severity,
+location, rule, evidence, impact, minimal fix, and fixed/remaining status when fixes are requested.
+Never apply a five-finding or other top-N cap. Internal completion reviews during generation retain
+coverage evidence without requiring a user-facing review report or standards summary.
 
 ## Validator files
 

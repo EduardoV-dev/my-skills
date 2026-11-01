@@ -20,6 +20,9 @@ For review-only work, report contract violations without starting an implementat
   in TypeScript. Reuse shared exports across producers and consumers; do not recreate endpoint-local types.
 - Wrap success, failure, and pagination payloads in `ApiResponse<T>`. Keep appropriate HTTP status codes.
   Protocol-defined redirects, streams, file downloads, and bodyless responses retain their required format.
+  Health-check endpoints (including liveness/readiness) may return populated `data` without `error`,
+  for both healthy and unhealthy responses, including HTTP 503. Keep this exception health-specific;
+  preserve the ordinary shared union and use the documented health response type for those endpoints.
 - Before implementing pagination, recommend offset or cursor based on the use case, ask the user which
   to use, and STOP until they answer. Honor an explicit choice already provided for the current task.
 - Require all offset metadata fields, using `totalItems` for the authorized, filtered dataset count,
@@ -54,7 +57,8 @@ For review-only work, report contract violations without starting an implementat
 
 ## Output Contract
 
-Return the chosen strategy, changed contracts/producers/consumers, checks, and remaining gaps.
+For explicit reviews, follow the coordinator's exhaustive chat report contract. During generation,
+apply and verify these rules internally without a separate standards report or summary; surface blockers.
 At the pagination decision gate, return only the recommendation and one question; wait for the answer.
 
 ## References

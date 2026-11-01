@@ -43,8 +43,16 @@ export type BidirectionalCursorPage<T> = {
 
 Use `ApiResponse<OffsetPage<Item>>`, `ApiResponse<CursorPage<Item>>`, or the explicitly requested
 `ApiResponse<BidirectionalCursorPage<Item>>`. The outer `data` holds the page; its `data` holds items.
-Success always includes `error: []`; failure always includes `data: null` and an `ApiError[]`.
+For ordinary endpoints, success includes `error: []`; failure includes `data: null` and an `ApiError[]`.
 Both branches include a string `message`. Keep client errors free of internal details.
+
+## Health-Check Exception
+
+Health-check endpoints, including liveness and readiness, may return populated `data` and omit
+`error` for both healthy and unhealthy responses, including HTTP 503. Use a documented health-specific
+response type shared by its producers and consumers; do not loosen `ApiResponse<T>` for ordinary APIs.
+Retain appropriate HTTP statuses and safe diagnostics. This exception does not require changing an
+existing compatible health-check format or adding a second envelope around it.
 
 ## Pagination Semantics
 

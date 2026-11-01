@@ -19,7 +19,8 @@ rules: standards apply before implementation, not only when a review is requeste
    Existing global installations can also supply these skills; a second installation is not required.
 2. Quit and restart your agent, then ask: **“Use ev-project-setup to wire the installed skills into
    this project.”** It resolves available skills, checks project guidance, and adds one managed block
-   to the project's root `AGENTS.md`, preserving unrelated instructions.
+   to the project's root `AGENTS.md`, preserving unrelated instructions. It also ensures the project's
+   `.gitignore` contains `__pycache__/` and `*.py[cod]` to exclude Python skill artifacts.
 3. Start a fresh session (quit and restart OpenCode). Request your normal task: matching skills must
    load before work, including coding standards before edits and relevant rules when scope changes.
 
@@ -36,8 +37,9 @@ python3 <installed-ev-project-setup>/assets/setup_project.py "/path/to/project" 
 ```
 
 It requires Python 3 and an existing target directory. `--check` is read-only and returns 1 for
-missing/outdated wiring or errors. The helper only manages instructions; it does not verify skill
-availability or agent compliance. See [setup and behavioral checks](skills/ev-project-setup/references/setup.md).
+missing/outdated wiring or ignore entries, or errors. The helper manages instructions and these two
+ignore entries; it does not verify skill availability or agent compliance.
+See [setup and behavioral checks](skills/ev-project-setup/references/setup.md).
 This adapter applies to agents that read `AGENTS.md`; other instruction formats need their own adapter.
 The global OpenCode setup below is separate and remains useful for personal defaults across projects.
 
@@ -127,6 +129,9 @@ The skill requires shared `ApiError`/`ApiResponse<T>` contracts, wrapped offset/
 validated extensible cursor utilities. Before implementing pagination, it recommends a strategy and
 waits for your choice. Review enforcement lives in `ev-code-review`'s backend rules and
 `ev-review-typescript`; neither requires this implementation skill to be installed.
+Health-check endpoints, including liveness/readiness, may return populated `data` without `error`
+for healthy and unhealthy responses (including HTTP 503), using their documented health-specific type.
+The ordinary `ApiResponse<T>` contract stays strict.
 
 ## Install review skills
 
@@ -178,6 +183,12 @@ Reviews run in the current agent thread regardless of size. The coordinator eval
 general, domain, and technology checks sequentially and consolidates them into one report. Maintained
 skills do not spawn subagents or parallel reviewers. Reviews remain read-only unless fixes are
 requested.
+
+Explicit review/check/fix requests display every finding directly in chat, ordered by severity, with
+location, violated rule, evidence, impact, and minimal fix. Fix reports include fixed/remaining status
+and verification evidence. Findings are never limited to five or a top-N subset. During code generation,
+standards and completion reviews run internally without a separate review report or standards summary;
+unresolved blockers, required decisions, and material verification gaps are still surfaced.
 
 ## Repository layout
 

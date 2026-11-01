@@ -23,6 +23,10 @@ Record results using `coverage.md`.
   `error: []`, and a string `message`; failure has `ok: false`, `data: null`, an `error` array, and a
   string `message`. Each error has string `code` and `message`, and optional string `field`.
   Keep appropriate HTTP statuses. Preserve protocol-defined redirects, streams, downloads, and bodyless responses.
+- Health-check endpoints, including liveness/readiness, may return populated `data` without `error`
+  on healthy and unhealthy responses, including HTTP 503. Preserve their documented health response
+  types, safe diagnostics, and appropriate statuses; do not flag this exception as an envelope defect
+  or weaken the ordinary endpoint contract.
 - Wrap the entire pagination payload in that envelope: `data` contains `{ data: items, meta }`.
   Offset metadata requires boolean `hasNextPage`/`hasPreviousPage` and numeric `totalItems`/`page`/`pageSize`.
   Require positive bounded pagination inputs, one-based pages, totals over authorized filtered rows,

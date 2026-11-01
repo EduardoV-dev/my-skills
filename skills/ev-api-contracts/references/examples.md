@@ -31,9 +31,27 @@ Resolve the required pagination decision before implementation; these examples d
 ```
 
 The outer `data` contains the page; the inner `data` contains its items. An empty collection is a
-successful page with an empty items array, not automatically a `404` or failure. Success includes
+successful page with an empty items array, not automatically a `404` or failure. Ordinary success includes
 `error: []`; failure includes `data: null` and the shared error array. Preserve appropriate HTTP statuses,
 safe actionable error messages, and protocol-defined bodyless/stream/download/redirect responses.
+
+## Health Checks May Keep Data Without An Error Field
+
+The following health-specific bodies are both permitted:
+
+```ts
+// HTTP 200: healthy.
+const healthyResponse = { ok: true, data: { status: "up" }, message: "Service is healthy." };
+
+// HTTP 503: unhealthy, with safe diagnostic data and no error field.
+const unhealthyResponse = { ok: false, data: { status: "down" }, message: "Service is unavailable." };
+```
+
+Do not report the absent `error` or populated failure `data` as envelope violations on health,
+liveness, or readiness endpoints. Use their documented health-specific response type; the ordinary
+`ApiResponse<T>` union remains unchanged. A normal business endpoint returning the second shape
+still violates the ordinary contract. Never expose credentials, stack traces, or internal paths in
+health diagnostics.
 
 ## Offset Counts Describe The Matching Dataset
 
