@@ -39,6 +39,10 @@ say so; preserve their exceptions and the harness's instruction hierarchy. Surfa
 with project instructions instead of silently choosing a policy. Technology without a maintained
 companion remains a reported coverage gap; apply available core rules without inventing technology rules.
 
+Concrete follow-up edits remain implementation, even when called fixes or supplied after the user's
+own review. Follow the core's follow-up baseline and dependency-scoping rules; a requested review,
+standards check/fix, or correction of formal-review findings uses the formal workflow instead.
+
 Before completing implementation, reconcile incremental unit reviews against the final task diff and
 verify integration using the requested baseline. Reuse current evidence; review uncovered/invalidated
 changes and run checks whose results no longer cover the final relevant state. A pre-existing defect

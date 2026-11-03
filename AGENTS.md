@@ -1,5 +1,8 @@
 # Repository guidance
 
+- For every request in this repository, make edits directly in this checkout. Never create or use a
+  sibling `my-skills-worktrees` worktree unless the user explicitly requests one. This repository
+  instruction overrides skill workflows that would otherwise default to a worktree.
 - Put each maintained skill in `skills/<skill-name>/SKILL.md`.
 - Keep the directory name and the skill's frontmatter `name` aligned; use lowercase kebab-case.
 - Prefix every maintained skill name and directory with `ev-`.

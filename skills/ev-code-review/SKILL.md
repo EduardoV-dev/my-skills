@@ -13,9 +13,11 @@ metadata:
 
 For implementation, reuse full applicable rules through `ev-coding-standards` before code edits and
 follow [incremental generation verification](references/generation-review.md). Reuse loaded unchanged
-guidance; reload missing/changed rules. Formal execution/artifacts apply to explicit review/check/fix
-requests, including a requested formal review report during generation, not ordinary completion.
-Review explicit scope; otherwise staged, unstaged, and untracked non-ignored working-tree changes.
+guidance; reload missing/changed rules. Concrete follow-up edits remain implementation, even when called
+fixes or supplied after the user's own review. Formal execution/artifacts apply to requested reviews,
+standards checks/fixes, or corrections to findings from a formal review, not ordinary completion.
+For formal reviews, honor explicit scope/baseline; otherwise use staged, unstaged, and untracked
+non-ignored working-tree changes.
 The core works without technology companions.
 
 ## Hard Rules
@@ -40,7 +42,8 @@ The core works without technology companions.
 | --- | --- |
 | Explicit files, commits, branch diff, or PR | Use that scope; state its baseline. |
 | Ordinary implementation/completion | Follow generation verification; no formal plan/results JSON or validator required. |
-| Explicit review/check/fix or formal report | Load and execute the formal workflow over the entire requested scope. |
+| Concrete follow-up edits, such as removing a field or renaming a table | Continue generation verification from the pre-follow-up state; recheck the delta and affected dependencies. |
+| Requested review, standards check/fix, correction of formal-review findings, or formal report | Load and execute the formal workflow over the entire requested scope. |
 | Default scope; clean working tree | Report no changes; do not switch to the latest commit. |
 | No Git repository and no explicit scope | Ask for scope before reviewing. |
 | UI/browser, server/data, shared, or mixed code | Load general plus frontend, backend, neither, or both respectively. |

@@ -1,9 +1,29 @@
 # Incremental Verification During Generation
 
 Use this workflow for ordinary implementation. Apply the same full authoritative rules as explicit
-review; change execution and bookkeeping, not substantive coverage. Explicit review/check/fix requests,
-including requests for a formal review report during generation, use the coordinator's formal workflow
-and coverage contract over the entire requested scope.
+review; change execution and bookkeeping, not substantive coverage. Requested reviews, standards
+checks/fixes, and corrections to findings from a formal review use the coordinator's formal workflow and
+coverage contract over the entire requested scope, including formal reports requested during generation.
+
+## Scope Follow-Up Changes
+
+Treat concrete change instructions as continued implementation, even when the user calls them fixes
+or supplies them after their own review. Removing a field, renaming a table, replacing literals with
+constants, or moving documentation does not itself request a formal review or standards fix.
+
+Before editing, record the current working state as the follow-up baseline, including uncommitted and
+untracked work; `HEAD` alone is insufficient. Keep the original task baseline and recoverable unit
+evidence. Do not commit, stage, stash, or create repository tracking files to capture this state.
+
+Review the follow-up delta (including deletions/renames) and affected callers/contracts/tests. Reuse
+unrelated valid evidence from the original implementation. If 30 of 100 previously reviewed files
+change, do not automatically review all 100 again; dependency impact can include unchanged consumers
+and broader integration checks. Missing evidence or uncertain impact requires recovery or expanded
+inspection under the invalidation rules below, never an assumed pass.
+
+Honor an explicitly requested review baseline/scope: "review these corrections" means the follow-up
+delta and relevant dependencies; "review the whole feature" means the full feature scope. Use the
+formal workflow for either review. Without an explicit review scope, use the coordinator's default.
 
 ## Load Once Per Active Context
 
@@ -74,8 +94,10 @@ Retain code/evidence itself or a recoverable location, not merely a hash with no
 
 ## Finish With Integration, Not A Restart
 
-Compare the final task diff with the unit records. Every changed file and applicable check must be
-covered by current evidence, including deletion/rename effects; review uncovered or invalidated changes.
+Compare the final task diff with the unit records, reconciling follow-up deltas with retained original
+evidence rather than resetting the original coverage obligation. Every changed file and applicable
+check must be covered by current evidence, including deletion/rename effects; review uncovered or
+invalidated changes.
 Check cross-unit contracts and end-to-end behavior. For substantial tasks, run the general completion
 checklist's applicable lint/format, typecheck, tests, and build when available, reusing only results
 covering the final relevant state. Unit tests alone do not establish integration correctness.

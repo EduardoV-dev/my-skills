@@ -25,6 +25,8 @@ of the resulting trace must distinguish actual inspection/checks from unsupporte
 | --- | --- |
 | Add, delete, and rename files across units | Final reconciliation accounts for every changed file and affected callers; no file sampling or unrelated cleanup. |
 | Fix one reviewed local function while another unit is unchanged | Affected review/tests rerun; unrelated current evidence is reused rather than restarted. |
+| After a reviewed 100-file implementation, user requests concrete edits affecting 30 files and calls them fixes | Pre-follow-up working state, including uncommitted/untracked work, is retained as the delta baseline; changed behavior and dependent consumers are rechecked with full applicable rules. Unrelated valid evidence is reused; no automatic full review or formal artifacts. |
+| Follow-up removes a field/environment variable, renames a table, replaces status/purpose literals, or moves docs | Delta review includes deletions/renames, remaining usages, affected consumers/configuration/tests and documentation links; unchanged dependent files are not excluded by a 30-file quota. |
 | Change an exported type/schema/API after reviewing its consumers | Unchanged dependent consumers and integration checks are revisited; unchanged consumer paths do not imply valid evidence. |
 | Change authorization/shared config/build inputs/environment | All affected units/checks are reconsidered, with broader verification where necessary. |
 | Prior evidence is missing, or dependency impact is uncertain | Evidence is recovered or checks expand/rerun; uncertainty is not recorded as PASS. |
@@ -37,7 +39,8 @@ of the resulting trace must distinguish actual inspection/checks from unsupporte
 | Unit checks pass but a cross-unit contract is broken | Final integration detects the mismatch; unit success alone cannot complete the task. |
 | Check succeeded, then its covered code/configuration changed | Stale results are not reused; final evidence covers the relevant completed state. |
 | Tests/build are unavailable | Concrete missing evidence is surfaced; no claimed compliance or invented successful checks. |
-| Explicit review/check/fix, including a review report requested during generation | Full formal plan/results/validator workflow covers the entire requested scope, not checkpoints alone; every finding is reported, including more than five, with fixed/remaining status for fixes. |
+| Requested review, standards check/fix, or correction of formal-review findings, including a review report during generation | Full formal plan/results/validator workflow covers the entire requested scope, not checkpoints alone; every finding is reported, including more than five, with fixed/remaining status for fixes. |
+| User requests "review these corrections", then "review the whole feature" | First formal review uses the recorded follow-up delta and relevant dependencies; second uses the full feature baseline. Neither silently substitutes the full dirty tree for an explicit scope. |
 
 ### Compaction Recovery
 

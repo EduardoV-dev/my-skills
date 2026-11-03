@@ -143,6 +143,8 @@ to `UNVERIFIED` for an assigned check and explain its cause. Never claim a check
 | --- | --- |
 | Implement multiple files with the same loaded rules | Reuse full guidance; review the coherent unit when ready, not after each edit. |
 | Fix one unit after checks passed | Recheck that change and affected dependencies/checks; preserve unrelated valid evidence. |
+| User requests concrete edits after their own review of a 100-file implementation | Capture the pre-follow-up working state; review the new delta and affected dependencies, reusing unrelated current evidence rather than restarting all 100 files. The word "fix" alone does not select formal review. |
+| User requests "review these corrections" | Formally review the follow-up delta and relevant dependencies, not the entire original dirty diff. |
 | Change a shared API/schema after reviewing callers | Invalidate dependent caller/integration evidence, including unchanged files. |
 | Complete a multi-unit task | Reconcile all changes against current unit evidence and verify integration; no automatic full restart or formal coverage JSON. |
 | Compact the context | Retain recoverable evidence and source identities; verify current changes and reload missing full rules before resuming. A summary never replaces either. |

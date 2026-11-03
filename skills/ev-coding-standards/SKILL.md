@@ -36,6 +36,7 @@ Use `EduardoV-dev/my-skills` as the authoritative rule source; installed skills 
 | Request | Action |
 | --- | --- |
 | Implement/change code | Follow pre-coding, then implement the requested scope. |
+| Concrete follow-up edits after implementation or the user's own review | Continue implementation; use the pre-follow-up baseline and dependency-scoped verification, not an automatic full review. |
 | Check/fix standards | Follow [check and fix](references/check-and-fix.md). |
 | Update installed standards | Follow [update](references/update.md). |
 | Add/change a standard | Follow [rule contributions](references/add-rule.md). |
