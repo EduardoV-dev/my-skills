@@ -46,7 +46,7 @@ The global OpenCode setup below is separate and remains useful for personal defa
 Shared formatting rules include [`general-logical-code-grouping`](skills/ev-code-review/references/logical-code-grouping.md):
 separate meaningful processing phases while keeping related statements together. Setup and pre-coding
 inspect the target project's existing formatter/linter for compatible enforcement; semantic grouping
-still requires generation-time judgment and review.
+uses coding judgment during implementation and is assessed fully during requested reviews.
 
 ## Global coding standards
 
@@ -187,25 +187,25 @@ requested.
 Explicit review/check/fix requests display every finding directly in chat, ordered by severity, with
 location, violated rule, evidence, impact, and minimal fix. Fix reports include fixed/remaining status
 and verification evidence. Findings are never limited to five or a top-N subset. During code generation,
-standards and completion reviews run internally without a separate review report or standards summary;
+standards guide implementation and relevant project checks run without automatic code review;
 unresolved blockers, required decisions, and material verification gaps are still surfaced.
 
-### Incremental verification during generation
+### Coding guidance now, complete review on request
 
-Generation uses the same full rules with a lighter execution path:
+Implementation uses the full applicable rules as guidance, without a mandatory review pass:
 
 1. Load complete applicable guidance once per active context; reuse unchanged text and load missing,
    changed, or newly applicable guidance before affected work.
-2. Review coherent behavior/dependency units when ready, including callers, contracts, tests, deletions,
-   and renames. Keep compact internal evidence instead of formal coverage JSON and validator runs.
-3. Recheck changes and affected dependencies when evidence becomes stale. At completion, reconcile
-   every changed file and applicable check against the final diff and verify cross-unit integration;
-   reuse only results that still cover the final relevant state.
+2. Implement the requested behavior and run relevant tests, lint/format checks, type checks, and builds.
+   Check affected consumers and integration; reuse results only while they cover the completed state.
+3. Report what works, performed checks, and material gaps. Do not require unit-review checkpoints,
+   per-rule review-evidence ledgers, or final review-coverage reconciliation.
 
-After compaction, verify continuation evidence against current sources/changes and reload missing full
-rules. Summaries never replace authoritative guidance or underlying review evidence. Explicit reviews
-still assess their entire requested scope using formal coverage and exhaustive reporting.
-See [generation verification](skills/ev-code-review/references/generation-review.md) and
+Request a complete review when the changes meet your expectations and work, or earlier if you want
+feedback. Explicit reviews assess their entire requested scope using formal coverage and exhaustive
+reporting; implementation checks do not substitute for that review or prove full compliance.
+After compaction, verify current sources/changes and retained check results, and reload missing full rules.
+See [implementation checks](skills/ev-code-review/references/generation-review.md) and
 [behavioral regression and cost checks](skills/ev-code-review/references/generation-verification.md).
 Metadata/helper tests do not establish agent compliance, speed gains, or defect-detection parity.
 

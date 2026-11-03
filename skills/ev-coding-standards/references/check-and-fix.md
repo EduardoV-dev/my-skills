@@ -2,7 +2,7 @@
 
 Use this workflow for requested standards checks/fixes and corrections to formal-review findings.
 Concrete implementation instructions, even called fixes or supplied after the user's own review,
-follow pre-coding and the core's incremental generation workflow instead.
+follow pre-coding guidance and relevant implementation checks instead; do not automatically start a review.
 
 ## Check
 
