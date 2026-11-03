@@ -190,6 +190,25 @@ and verification evidence. Findings are never limited to five or a top-N subset.
 standards and completion reviews run internally without a separate review report or standards summary;
 unresolved blockers, required decisions, and material verification gaps are still surfaced.
 
+### Incremental verification during generation
+
+Generation uses the same full rules with a lighter execution path:
+
+1. Load complete applicable guidance once per active context; reuse unchanged text and load missing,
+   changed, or newly applicable guidance before affected work.
+2. Review coherent behavior/dependency units when ready, including callers, contracts, tests, deletions,
+   and renames. Keep compact internal evidence instead of formal coverage JSON and validator runs.
+3. Recheck changes and affected dependencies when evidence becomes stale. At completion, reconcile
+   every changed file and applicable check against the final diff and verify cross-unit integration;
+   reuse only results that still cover the final relevant state.
+
+After compaction, verify continuation evidence against current sources/changes and reload missing full
+rules. Summaries never replace authoritative guidance or underlying review evidence. Explicit reviews
+still assess their entire requested scope using formal coverage and exhaustive reporting.
+See [generation verification](skills/ev-code-review/references/generation-review.md) and
+[behavioral regression and cost checks](skills/ev-code-review/references/generation-verification.md).
+Metadata/helper tests do not establish agent compliance, speed gains, or defect-detection parity.
+
 ## Repository layout
 
 - `skills/` — skills maintained in this repository. Each skill lives in its own directory and starts with `SKILL.md`.
