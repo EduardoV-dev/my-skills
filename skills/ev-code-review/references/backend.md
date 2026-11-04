@@ -1,11 +1,12 @@
 # Backend Rules
 
-Apply to server operations, API handlers, data access, SQL, server configuration, and their tests.
+Apply to server operations, API handlers, background workers (queue consumers, scheduled jobs, and
+event-triggered functions), data access, SQL, server configuration, and their tests.
 Load general rules as well. Shared contracts may require inspection across frontend/backend assignments.
 
 Coverage IDs: `backend-input-validation-errors`; `backend-api-contracts-pagination`;
 `backend-injection-query-construction`; `backend-authorization-data-isolation`;
-`backend-browser-facing-security`; `backend-service-operational-resilience`.
+`backend-browser-facing-security`; `backend-service-operational-resilience`; `backend-worker-structure`.
 Record results using `coverage.md`.
 
 ## Input And Error Boundaries
@@ -43,6 +44,15 @@ Record results using `coverage.md`.
   or cursor for sequential/large/changing datasets. Ask the user to choose and stop until answered,
   unless the current task already specifies the choice. Review-only work reports violations without
   interrupting for implementation decisions; load installed `ev-api-contracts` for implementation.
+
+## Feature-Owned Worker Structure And Event Validation
+
+Rule ID: `backend-worker-structure`.
+
+For background workers, load the complete [worker structure and validation rules](backend-worker-structure.md).
+Organize functions by business capability, keep trigger entry points thin, validate complete incoming
+messages at ingress, and pass parsed domain messages to trigger-independent business operations.
+Use the project's shared-contract package for genuinely shared schemas; keep function-private code private.
 
 ## SQL And Other Injection Prevention
 
@@ -108,5 +118,7 @@ Record results using `coverage.md`.
 - Queries, commands, paths, outbound requests, and webhooks have applicable injection/integrity controls.
 - Cookie/CSP/CORS/CSRF controls apply where relevant; abuse and execution limits preserve data integrity.
 - Relevant tests cover access control, hostile input, timeouts, and partial failures.
+- Workers follow function ownership and schema boundaries; tests cover validated processing, no business
+  effects for invalid messages, trigger retry behavior, and business operations independent of triggers.
 - API envelopes and pagination metadata match their contracts; cursor checks cover malformed input,
   round trips, tied timestamps, boundaries, and backward navigation when requested.
