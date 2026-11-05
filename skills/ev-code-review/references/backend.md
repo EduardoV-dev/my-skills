@@ -32,8 +32,11 @@ Record results using `coverage.md`.
   Offset metadata requires boolean `hasNextPage`/`hasPreviousPage` and numeric `totalItems`/`page`/`pageSize`.
   Require positive bounded pagination inputs, one-based pages, totals over authorized filtered rows,
   and flags consistent with totals. Use deterministic ordering with a unique tie-breaker.
-- Cursor metadata always includes `nextCursor: string | null`; include `prevCursor: string | null`
-  only when explicitly requested. Use null at traversal boundaries and verify another page exists.
+- Cursor metadata always includes `nextCursor: string | null` and `resetCursor: boolean`; include
+  `prevCursor: string | null` only when explicitly requested. Use null at traversal boundaries and
+  verify another page exists. Set `resetCursor` to true when the current pagination chain is invalid;
+  clients must discard stored cursors/accumulated pages and restart from the beginning without a cursor.
+  Otherwise emit false, including ordinary empty/final pages; a null cursor alone does not require a reset.
 - Require shared cursor encode/decode utilities, Zod payload validation, an extendable base schema,
   and schema-aware methods. Recognized malformed incoming encoding/JSON/payloads are API validation
   errors; invalid server-generated cursors and unexpected utility defects are safe internal failures.
@@ -121,4 +124,4 @@ Use the project's shared-contract package for genuinely shared schemas; keep fun
 - Workers follow function ownership and schema boundaries; tests cover validated processing, no business
   effects for invalid messages, trigger retry behavior, and business operations independent of triggers.
 - API envelopes and pagination metadata match their contracts; cursor checks cover malformed input,
-  round trips, tied timestamps, boundaries, and backward navigation when requested.
+  round trips, tied timestamps, boundaries, reset signaling/client restart, and backward navigation when requested.
