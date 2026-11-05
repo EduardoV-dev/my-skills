@@ -8,7 +8,7 @@
 - Prefix every maintained skill name and directory with `ev-`.
 - Make each skill's description state when it should activate and what it does.
 - Keep instructions concise. Put skill-specific templates in `assets/` and supporting material in `references/` under that skill.
-- Add third-party skills to `catalog/README.md` with their upstream source and install command; do not copy their files into `skills/`.
+- Add third-party skills to `CATALOG.md` with their upstream source and install command; do not copy their files into `skills/`.
 - Before publishing, verify the Skills CLI can list the repository's skills.
 
 ## Maintained setup skills
@@ -17,7 +17,7 @@
 
 ## Maintained implementation skills
 
-- `skills/ev-coding-standards/SKILL.md` — pre-coding rule selection and global check/fix/update/add-rule workflows.
+- `skills/ev-coding-standards/SKILL.md` — installed pre-coding rule selection and check/fix/update workflows.
 - `skills/ev-api-contracts/SKILL.md` — first-party JSON response contracts, pagination decision gate, and validated extensible cursors.
 
 ## Maintained review skills
@@ -33,6 +33,13 @@ Technology companions apply before implementation through `ev-coding-standards` 
 run in one agent thread: do not spawn subagents or parallel reviewers; perform applicable checks
 sequentially.
 
+## Manual rule maintenance
+
+- Edit the existing rule owner and align affected examples, contracts, tests, and documentation.
+- Preserve exceptions and unrelated work; run affected tests, metadata/link validation, and Skills CLI discovery.
+- Repository setup/update helpers are explicit maintenance tools, not prerequisites for installed skill use.
+- Do not create contribution branches/worktrees, publish, or change global configuration unless requested.
+
 <!-- ev-project-skills:start -->
 ## Skill activation
 
@@ -42,6 +49,10 @@ If unavailable or incomplete, inspect `SKILL.md` metadata in the project's `.age
 `~/.agents/skills/` and `~/.config/opencode/skills/`. Use any project registry only after checking
 that its entries still resolve. Prefer project-local copies of the same skill and report shadowing
 or incompatible sources; do not silently mix versions.
+
+Resolve references relative to each selected installed skill. Normal skill use must not search for,
+clone, or require the upstream repository or its Git state. Use installed paths and available skill
+metadata for provenance; unavailable source revisions do not block work.
 
 Before each task, match its intent, target files, and actual technology usage to available skill
 activation descriptions. Load the complete matching `SKILL.md` files and their required references
@@ -58,7 +69,7 @@ Apply standards as coding guidance and run relevant project checks, including af
 Do not automatically review work units, assess every rule after implementation, keep review-evidence
 ledgers, or reconcile review coverage at handoff. Reuse check results only while they cover the completed
 state. Before compaction retain task/check context; afterward verify current changes and reload missing
-full rules. Record selected rule paths, source revision/dirty state, and performed checks internally;
+full rules. Record installed rule paths, available skill metadata, and performed checks internally;
 do not emit a separate review report or standards summary. Surface unresolved blockers,
 required decisions, and material verification gaps. For explicit review/check/fix requests, display
 every finding in chat with severity, location, rule, evidence, impact, minimal fix, and fixed/remaining

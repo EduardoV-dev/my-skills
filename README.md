@@ -29,6 +29,11 @@ documentation, testing, or other tasks without rewriting the loader. It does not
 body every session. Project-local skills take precedence; missing required guidance and policy
 conflicts are surfaced before affected edits. Setup does not silently install or overwrite skills.
 
+Installed skills are self-contained: the agent loads their bundled rules and references directly.
+Normal coding, review, check/fix, and project wiring do not require a clone of this repository,
+search for its local path, or inspect its Git state. References resolve relative to each selected
+installed skill; unavailable source revisions do not block work.
+
 The helper can also maintain/check the block directly once the core skills are available:
 
 ```bash
@@ -50,17 +55,21 @@ uses coding judgment during implementation and is assessed fully during requeste
 
 ## Global coding standards
 
-Use a stable local checkout of `EduardoV-dev/my-skills` on `main` as the global source. From its root:
+For optional checkout-backed global OpenCode setup, use a stable local checkout of
+`EduardoV-dev/my-skills` on `main`. This is a maintenance choice, not a requirement for using skills
+installed through the Skills CLI. From the checkout root:
 
 ```bash
 git pull --ff-only origin main
 python3 skills/ev-coding-standards/assets/manage.py setup
 ```
 
-Setup links every maintained skill into `~/.agents/skills/`, installs four command links under
+Setup links every maintained skill into `~/.agents/skills/`, installs three command links under
 `~/.config/opencode/commands/`, and maintains one delimited loader block in the existing global
 `~/.config/opencode/AGENTS.md`. It preserves unrelated content and refuses installation collisions.
-Rerunning setup is safe; it removes only retired skill links owned by this checkout.
+Rerunning setup is safe; it removes only retired skill and command links owned by this checkout,
+including broken retired command links in OpenCode's `commands/` and `command/` directories.
+The global loader resolves installed skills without embedding this checkout's absolute path.
 Python 3 and Git are required; Skills CLI discovery additionally requires Node/npm.
 
 **Quit and restart OpenCode after setup or update.** Skill discovery does not load rule bodies:
@@ -76,30 +85,23 @@ need their own global-instruction adapter to require loading before editing.
 | --- | --- |
 | `/ev-check [scope]` | Read-only standards review; defaults to working-tree changes, not the last commit. |
 | `/ev-fix [scope]` | Check, minimally fix evidenced scoped violations, verify, and recheck. |
-| `/ev-update` | Require clean `main`, pull fast-forward only, validate, and reconcile global exposure. |
-| `/ev-add-rule <rule>` | Follow the contribution workflow; use a worktree by default, or explicitly authorized task-scoped direct edits. |
+| `/ev-update` | Explicit checkout-backed update: require clean `main`, pull fast-forward only, validate, and reconcile global exposure. Standalone copies need their original installer. |
 
-Natural-language check/fix/update/add-rule requests use the same skill workflows. Keep the active
-checkout on `main`; setup can expose uncommitted changes and reports that dirty state. Update and
-the default add-rule helper refuse dirty work. An explicitly authorized direct-edit exception applies
-only to the current contribution task; preserve existing changes and do not infer publication or
-activation permission. It does not bypass the update helper's safety checks. Never switch the active
-checkout to an unmerged contribution branch.
-If validation fails after an update pulls, report the checked-out revision and repair through a
-contribution; no automatic reset is performed. Loaded instructions can remain stale until restart.
+Natural-language check/fix/update requests use the same skill workflows. Only an explicitly requested
+checkout-backed setup/update needs source Git access. Keep that checkout on `main`; setup can expose
+uncommitted changes and reports its dirty state. Update refuses dirty, diverged, or unpublished work.
+For standalone installed copies, the agent reports that the repository update helper is unavailable
+and requests reinstallation through the original installer/scope; it does not search for or clone a
+separate checkout. If validation fails after pulling, the revision remains checked out for manual
+repair; no automatic reset is performed. Loaded instructions can remain stale until restart.
 
-### Contribute a standard
+### Maintain rules manually
 
-1. Invoke `/ev-add-rule <rule>` or follow the [contribution workflow](skills/ev-coding-standards/references/add-rule.md).
-   By default, the helper pulls latest and creates a sibling `<repo-name>-worktrees/<slug>` on `rules/<slug>`.
-   If direct edits are explicitly authorized for this task, follow the documented exception instead;
-   steps involving the contribution worktree apply only to the default workflow.
-2. Edit the existing rule owner there, preserving exceptions and updating coverage/docs when needed.
-3. Validate before publication. Fetch and rebase unpublished work onto current `origin/main`;
-   merge upstream into already-published branches. Resolve semantic conflicts and rerun checks.
-4. Publish a normal-push PR when authorized. A conflicting policy or two unsuccessful reconciliation
-   rounds stops the workflow with work preserved. No force pushes, resets, or auto-stashing.
-5. After merge, run `/ev-update` to activate the contribution globally.
+1. Edit the owning skill under `skills/`, following `AGENTS.md`. Align affected references, templates,
+   examples, contracts, tests, and documentation; preserve existing exceptions and unrelated work.
+2. Run the verification commands below and inspect the diff. Commit/publish only when intended.
+3. Update installations through their existing installation method, then restart the agent. Existing
+   checkout-backed symlinks expose edited files immediately, but running sessions retain loaded text.
 
 ### Verify the setup
 
@@ -112,7 +114,7 @@ npx skills add . --list
 ```
 
 The setup tests use temporary homes and local Git remotes. They verify preservation/idempotence,
-collision handling, safe synchronization, and isolated contribution branches. Agent rule selection
+collision handling, portable loaders, retired-command cleanup, and safe synchronization. Agent rule selection
 and semantic conflict resolution require behavioral verification; metadata checks cannot prove them.
 Project wiring tests additionally cover byte-preserving updates, malformed markers, symlinks,
 paths containing spaces, and read-only drift detection.
@@ -129,9 +131,13 @@ The skill requires shared `ApiError`/`ApiResponse<T>` contracts, wrapped offset/
 validated extensible cursor utilities. Before implementing pagination, it recommends a strategy and
 waits for your choice. Review enforcement lives in `ev-code-review`'s backend rules and
 `ev-review-typescript`; neither requires this implementation skill to be installed.
-Health-check endpoints, including liveness/readiness, may return populated `data` without `error`
-for healthy and unhealthy responses (including HTTP 503), using their documented health-specific type.
-The ordinary `ApiResponse<T>` contract stays strict.
+Cursor metadata requires `nextCursor: string | null` and `resetCursor: boolean`; true invalidates the
+current pagination chain and tells clients to discard accumulated pages/cursors and restart without
+a cursor. Ordinary empty/final pages use false; backward navigation adds `prevCursor` only on request.
+Health-check endpoints, including liveness/readiness, return the shared `HealthResponse` directly:
+`{ status: "ok" | "degraded" | "down", checks: Record<string, "up" | "down"> }`.
+All checks up yields HTTP 200; mixed or all-down results yield HTTP 503. Health responses do not use
+the ordinary envelope; `ApiResponse<T>` stays strict for ordinary endpoints.
 
 ## Install review skills
 
@@ -212,8 +218,8 @@ Metadata/helper tests do not establish agent compliance, speed gains, or defect-
 ## Repository layout
 
 - `skills/` — skills maintained in this repository. Each skill lives in its own directory and starts with `SKILL.md`.
-- `catalog/` — links and install commands for third-party skills; upstream repositories remain the source of truth.
+- `CATALOG.md` — links and install commands for third-party skills; upstream repositories remain the source of truth.
 
 All maintained skills use the `ev-` prefix, with matching directory and frontmatter names.
 
-See [catalog/README.md](catalog/README.md) to add a third-party entry.
+See [CATALOG.md](CATALOG.md) to add a third-party entry.
