@@ -47,6 +47,16 @@ Use `ApiResponse<OffsetPage<Item>>`, `ApiResponse<CursorPage<Item>>`, or the exp
 For ordinary endpoints, success includes `error: []`; failure includes `data: null` and an `ApiError[]`.
 Both branches include a string `message`. Keep client errors free of internal details.
 
+## Resource Update Preconditions
+
+Require `lastKnownUpdatedAt: string` in resource-update bodies, including PATCH. It is the resource's
+last-read, timezone-qualified ISO-8601 `updatedAt`, preserved at database precision, not a writable field.
+Apply the [optimistic-locking contract](../references/optimistic-locking.md): atomically match
+`updated_at = lastKnownUpdatedAt` with identity and authorization scope, advance the server-owned
+timestamp, and return the persisted new `updatedAt` on success. A failed conditional match returns
+HTTP 409 in `ApiResponse<T>`'s failure branch with a safe refresh instruction, preserving established
+authorization/not-found handling. Creates do not require this precondition.
+
 ## Health-Check Exception
 
 Export and reuse this shared type for health-check endpoints, including liveness and readiness:

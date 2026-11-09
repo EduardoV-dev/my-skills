@@ -121,7 +121,7 @@ paths containing spaces, and read-only drift detection.
 
 ## API implementation rules
 
-Install `ev-api-contracts` to standardize first-party JSON API envelopes and pagination:
+Install `ev-api-contracts` to standardize first-party JSON API envelopes, optimistic locking, and pagination:
 
 ```bash
 npx skills add EduardoV-dev/my-skills --skill ev-api-contracts
@@ -138,6 +138,13 @@ Health-check endpoints, including liveness/readiness, return the shared `HealthR
 `{ status: "ok" | "degraded" | "down", checks: Record<string, "up" | "down"> }`.
 All checks up yields HTTP 200; mixed or all-down results yield HTTP 503. Health responses do not use
 the ordinary envelope; `ApiResponse<T>` stays strict for ordinary endpoints.
+
+Resource updates, including PATCH, require `lastKnownUpdatedAt` with the last-read resource timestamp.
+The database update atomically matches identity, authorization scope, and `updated_at` against that
+token; a failed match returns HTTP 409 with a refresh instruction, preserving existing access/not-found
+policy. Successful writes advance the server-owned timestamp and return its exact new value. Preserve
+microseconds throughout the round trip. See the [optimistic-locking contract](skills/ev-api-contracts/references/optimistic-locking.md)
+and [NestJS DTO example](skills/ev-review-nestjs/references/http.md#require-an-optimistic-locking-token-on-updates).
 
 ## Install review skills
 
@@ -156,7 +163,7 @@ automatically select the core when you select a companion.
 | `ev-review-typescript` | TypeScript contracts, narrowing, and environment-module conventions |
 | `ev-review-react` | React components, hooks, state, safe rendering, and applicable UI testing |
 | `ev-review-nextjs` | Next.js routes, rendering, Server Actions, and client/server environment boundaries |
-| `ev-review-nestjs` | NestJS plural grouping, validated body DTOs, global validation, `/api`, OpenAPI/Scalar at `/docs`, health contracts, injected-service naming, and test ownership |
+| `ev-review-nestjs` | NestJS plural grouping, validated body DTOs, optimistic locking, global validation, `/api`, OpenAPI/Scalar at `/docs`, health contracts, injected-service naming, and test ownership |
 
 For explicit selection, for example in a React + TypeScript project:
 

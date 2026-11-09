@@ -18,7 +18,7 @@
 ## Maintained implementation skills
 
 - `skills/ev-coding-standards/SKILL.md` — installed pre-coding rule selection and check/fix/update workflows.
-- `skills/ev-api-contracts/SKILL.md` — first-party JSON response contracts, pagination decision gate, and validated extensible cursors.
+- `skills/ev-api-contracts/SKILL.md` — first-party JSON response contracts, optimistic locking, pagination decision gate, and validated extensible cursors.
 
 ## Maintained review skills
 
@@ -26,7 +26,7 @@
 - `skills/ev-review-typescript/SKILL.md` — optional TypeScript contract rules.
 - `skills/ev-review-react/SKILL.md` — optional React component, hook, and rendering rules.
 - `skills/ev-review-nextjs/SKILL.md` — optional Next.js route and client/server boundary rules.
-- `skills/ev-review-nestjs/SKILL.md` — optional NestJS plural grouping, DTO/global validation, API/docs setup, health contracts, injected-service naming, and test ownership rules.
+- `skills/ev-review-nestjs/SKILL.md` — optional NestJS plural grouping, DTO/global validation, optimistic locking, API/docs setup, health contracts, injected-service naming, and test ownership rules.
 
 Technology companions apply before implementation through `ev-coding-standards` and extend
 `ev-code-review` during reviews; they do not initiate separate reviews or delegate. Maintained skills
