@@ -19,6 +19,9 @@
 
 - `skills/ev-coding-standards/SKILL.md` — installed pre-coding rule selection and check/fix/update workflows.
 - `skills/ev-api-contracts/SKILL.md` — first-party JSON response contracts, optimistic locking, pagination decision gate, and validated extensible cursors.
+- `skills/ev-postgres/SKILL.md` — PostgreSQL timestamp precision, locking, and transaction rules.
+- `skills/ev-dead-code/SKILL.md` — find and safely remove proven-unused code.
+- `skills/ev-code-simplification/SKILL.md` — find duplication and simplify code without changing behavior.
 
 ## Maintained review skills
 
@@ -61,6 +64,11 @@ reloading it per file or edit. Reload missing/changed guidance and load newly ap
 Apply this to implementation, debugging, review, documentation, setup, and other
 workflows, including newly installed skills. Reevaluate when task scope changes. Discovery alone
 does not load rules; do not load unrelated skill bodies or limit selection to a fixed skill list.
+
+Apply compatible instructions from all applicable skills together without requiring third-party skills.
+Follow the instruction hierarchy and applicable project guidance; do not treat skill origin as priority.
+For irreconcilable instructions with no governing priority, identify the sources and affected action,
+surface the conflict, and obtain a decision before that action. Do not silently weaken EV rules.
 
 Before generating or changing code, load `ev-coding-standards`. Follow its pre-coding workflow to
 read complete general, applicable frontend/backend, technology, and implementation rules. Reuse

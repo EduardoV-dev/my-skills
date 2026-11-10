@@ -9,6 +9,7 @@ copy third-party files into this repository.
 | --- | --- | --- | --- |
 | TDD | Apply a test-driven development workflow. | [mattpocock/skills](https://github.com/mattpocock/skills) | `npx skills add https://github.com/mattpocock/skills --skill tdd` |
 | Ponytail | Prefer the smallest correct implementation; avoid unnecessary code and dependencies. | [dietrichgebert/ponytail](https://github.com/dietrichgebert/ponytail) | `npx skills add https://github.com/dietrichgebert/ponytail --skill ponytail` |
+| Agent Skills | Engineering workflows including review, simplification, testing, and implementation. | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) | `npx skills add addyosmani/agent-skills` |
 | Turborepo | Apply Turborepo monorepo practices. | [vercel/turborepo](https://github.com/vercel/turborepo) | `npx skills add https://github.com/vercel/turborepo --skill turborepo` |
 | OpenSpec | Spec-driven development workflow and CLI. | [Fission-AI/OpenSpec](https://github.com/Fission-AI/OpenSpec) | `pnpm add -g @fission-ai/openspec@latest` |
 

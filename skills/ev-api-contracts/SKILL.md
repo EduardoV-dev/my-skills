@@ -39,9 +39,10 @@ For review-only work, report contract violations without starting an implementat
   lexicographic continuation predicates. Never paginate tied timestamps by timestamp alone.
 - Expose an extendable base cursor schema and schema-aware encode/decode methods so additional sort
   fields can be validated without duplicating utilities. Preserve timestamp precision through round trips.
-- Require `lastKnownUpdatedAt` on resource-update bodies. Apply the complete
+- Require the last-read optimistic token on resource-update bodies: prefer an existing version column,
+  otherwise use `lastKnownUpdatedAt`. Apply the complete
   [optimistic-locking contract](references/optimistic-locking.md): atomically match resource identity,
-  authorization scope, and `updated_at = lastKnownUpdatedAt`; advance the server-owned timestamp.
+  authorization scope, and the token; advance the server-owned token.
   Continue only for one updated row; zero matches return HTTP 409 through the ordinary failure envelope,
   preserving established authorization/not-found policy. Keep exact timestamp precision end to end.
 
@@ -49,7 +50,7 @@ For review-only work, report contract violations without starting an implementat
 
 | Use case | Recommendation |
 | --- | --- |
-| Resource update | Require the last-read timestamp; use an atomic conditional update and HTTP 409 on conflict. |
+| Resource update | Require the last-read version when available, otherwise timestamp; use an atomic conditional update and HTTP 409 on conflict. |
 | Health endpoint | Return direct `HealthResponse`; aggregate actual checks and use HTTP 200 or 503. |
 | Numbered pages, random page access, exact totals | Offset; note count/deep-offset costs and shifting rows. |
 | Sequential feeds, large or frequently changing datasets | Cursor; note lack of arbitrary page jumps. |

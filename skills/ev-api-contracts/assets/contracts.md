@@ -49,11 +49,11 @@ Both branches include a string `message`. Keep client errors free of internal de
 
 ## Resource Update Preconditions
 
-Require `lastKnownUpdatedAt: string` in resource-update bodies, including PATCH. It is the resource's
-last-read, timezone-qualified ISO-8601 `updatedAt`, preserved at database precision, not a writable field.
-Apply the [optimistic-locking contract](../references/optimistic-locking.md): atomically match
-`updated_at = lastKnownUpdatedAt` with identity and authorization scope, advance the server-owned
-timestamp, and return the persisted new `updatedAt` on success. A failed conditional match returns
+Require the last-read version in resource-update bodies, including PATCH, when the table has a version
+column; otherwise require `lastKnownUpdatedAt: string`, the last-read timezone-qualified `updatedAt`
+preserved at database precision. Neither token is writable entity data.
+Apply the [optimistic-locking contract](../references/optimistic-locking.md): atomically match the token
+with identity and authorization scope, advance it, and return its persisted new value. A failed match returns
 HTTP 409 in `ApiResponse<T>`'s failure branch with a safe refresh instruction, preserving established
 authorization/not-found handling. Creates do not require this precondition.
 

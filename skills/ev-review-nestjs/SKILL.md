@@ -31,9 +31,9 @@ Use before NestJS implementation or with `ev-code-review`. Load general/backend 
 - Require runtime DTO classes for request bodies unless explicitly overridden. Validate on DTOs with
   `class-validator`; use `class-transformer` for needed transformations/nested instances. Prefer these
   alone; separate validation files/additional validators require a concrete need. Static types do not suffice.
-- Require the [optimistic-locking DTO](references/http.md#require-an-optimistic-locking-token-on-updates)
-  on resource updates, including PATCH: keep `lastKnownUpdatedAt` required, timezone-qualified, and
-  precise to microseconds. Apply the backend atomic update/409 rule and document the conflict response.
+- Require the selected [optimistic-locking token](references/http.md#require-an-optimistic-locking-token-on-updates)
+  on resource updates, including PATCH: prefer an existing version; otherwise require a timezone-qualified
+  timestamp at stored precision. Apply the backend atomic update/409 rule and document the conflict response.
 - Validate path parameters at the HTTP boundary using a matching built-in pipe inline in `@Param()`;
   avoid duplicate manual format checks in controllers or services. Preserve distinct domain validation
   and use custom pipes when built-ins cannot meet the contract.
@@ -51,7 +51,7 @@ Use before NestJS implementation or with `ev-code-review`. Load general/backend 
 | Ambiguous injected dependency | Trace provider contracts before applying service naming. |
 | Module files/tests | Apply independent category counts, plural grouping, and test ownership. |
 | Body endpoint/bootstrap | Verify DTO metadata, global validation, `/api`, and OpenAPI/Scalar at `/docs`. |
-| Resource update | Verify required timestamp validation, atomic comparison, and documented HTTP 409. |
+| Resource update | Verify selected token validation, atomic comparison, and documented HTTP 409. |
 | Path parameters | Verify format validation uses an appropriate inline built-in pipe when available. |
 | Health endpoint | Verify actual checks, direct payload, aggregation, and 200/503 mapping. |
 

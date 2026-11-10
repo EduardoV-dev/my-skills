@@ -29,6 +29,11 @@ documentation, testing, or other tasks without rewriting the loader. It does not
 body every session. Project-local skills take precedence; missing required guidance and policy
 conflicts are surfaced before affected edits. Setup does not silently install or overwrite skills.
 
+EV skills can be used alongside third-party skills without requiring them. Applicable compatible
+instructions compose; instruction hierarchy and project guidance still apply. If instructions cannot
+be reconciled, the agent identifies the conflict and requests a decision before the affected action.
+Existing EV rules remain in force.
+
 Installed skills are self-contained: the agent loads their bundled rules and references directly.
 Normal coding, review, check/fix, and project wiring do not require a clone of this repository,
 search for its local path, or inspect its Git state. References resolve relative to each selected
@@ -64,7 +69,7 @@ git pull --ff-only origin main
 python3 skills/ev-coding-standards/assets/manage.py setup
 ```
 
-Setup links every maintained skill into `~/.agents/skills/`, installs three command links under
+Setup links every maintained skill into `~/.agents/skills/`, installs four command links under
 `~/.config/opencode/commands/`, and maintains one delimited loader block in the existing global
 `~/.config/opencode/AGENTS.md`. It preserves unrelated content and refuses installation collisions.
 Rerunning setup is safe; it removes only retired skill and command links owned by this checkout,
@@ -83,8 +88,9 @@ need their own global-instruction adapter to require loading before editing.
 
 | OpenCode command | Workflow |
 | --- | --- |
-| `/ev-check [scope]` | Read-only standards review; defaults to working-tree changes, not the last commit. |
-| `/ev-fix [scope]` | Check, minimally fix evidenced scoped violations, verify, and recheck. |
+| `/ev-code-review [scope]` | Read-only standards review; defaults to working-tree changes, not the last commit. Afterward, say “fix them all” to correct its findings. |
+| `/ev-clean-unused-code [scope]` | Find and remove proven-unused code; report uncertain candidates. |
+| `/ev-simplify-code [scope]` | Find and simplify or deduplicate code while preserving behavior. |
 | `/ev-update` | Explicit checkout-backed update: require clean `main`, pull fast-forward only, validate, and reconcile global exposure. Standalone copies need their original installer. |
 
 Natural-language check/fix/update requests use the same skill workflows. Only an explicitly requested
@@ -119,6 +125,20 @@ and semantic conflict resolution require behavioral verification; metadata check
 Project wiring tests additionally cover byte-preserving updates, malformed markers, symlinks,
 paths containing spaces, and read-only drift detection.
 
+## Code cleanup
+
+Install the cleanup skills alongside the EV coding core:
+
+```bash
+npx skills add EduardoV-dev/my-skills \
+  --skill ev-coding-standards --skill ev-code-review \
+  --skill ev-dead-code --skill ev-code-simplification
+```
+
+Ask `ev-dead-code` to find or remove unused code, or `ev-code-simplification` to find or remove
+duplication and simplify existing code. Finding candidates is read-only; removal requires a request.
+Both retain uncertain cases and report verification gaps. Installed third-party skills are optional.
+
 ## API implementation rules
 
 Install `ev-api-contracts` to standardize first-party JSON API envelopes, optimistic locking, and pagination:
@@ -139,11 +159,12 @@ Health-check endpoints, including liveness/readiness, return the shared `HealthR
 All checks up yields HTTP 200; mixed or all-down results yield HTTP 503. Health responses do not use
 the ordinary envelope; `ApiResponse<T>` stays strict for ordinary endpoints.
 
-Resource updates, including PATCH, require `lastKnownUpdatedAt` with the last-read resource timestamp.
-The database update atomically matches identity, authorization scope, and `updated_at` against that
-token; a failed match returns HTTP 409 with a refresh instruction, preserving existing access/not-found
-policy. Successful writes advance the server-owned timestamp and return its exact new value. Preserve
-microseconds throughout the round trip. See the [optimistic-locking contract](skills/ev-api-contracts/references/optimistic-locking.md)
+Resource updates, including PATCH, require a last-read concurrency token: prefer an existing version
+column, otherwise use `lastKnownUpdatedAt`. The database atomically matches identity, authorization scope,
+and the token; a failed match returns HTTP 409 with a refresh instruction, preserving existing access/not-found
+policy. Successful writes advance and return the exact new token. For JavaScript/PostgreSQL applications,
+`ev-postgres` covers `timestamptz(3)`, a monotonic update trigger, and transaction/locking rules. See the
+[optimistic-locking contract](skills/ev-api-contracts/references/optimistic-locking.md)
 and [NestJS DTO example](skills/ev-review-nestjs/references/http.md#require-an-optimistic-locking-token-on-updates).
 
 ## Install review skills
@@ -164,6 +185,7 @@ automatically select the core when you select a companion.
 | `ev-review-react` | React components, hooks, state, safe rendering, and applicable UI testing |
 | `ev-review-nextjs` | Next.js routes, rendering, Server Actions, and client/server environment boundaries |
 | `ev-review-nestjs` | NestJS plural grouping, validated body DTOs, optimistic locking, global validation, `/api`, OpenAPI/Scalar at `/docs`, health contracts, injected-service naming, and test ownership |
+| `ev-postgres` | PostgreSQL timestamp precision, optimistic and pessimistic locking, and transaction boundaries |
 
 For explicit selection, for example in a React + TypeScript project:
 
