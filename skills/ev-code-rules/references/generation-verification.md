@@ -32,7 +32,7 @@ do not block execution. Keep expected behavior separately from the implementing 
 | Tests pass locally but affected integration fails | Failure is fixed in scope or surfaced as a blocker; local test success is not claimed as integration success. |
 | Known in-scope correctness/security/accessibility issue is encountered | Issue is addressed or surfaced as blocked; deferring comprehensive review does not permit knowingly broken implementation. |
 | Tests/build unavailable, or style defects are not covered by tools | Material gaps are reported; automated success is not described as full standards compliance. No exhaustive manual style review is automatically substituted. |
-| Explicit review/check/fix, or corrections to formal-review findings | Full formal workflow covers the requested scope; every finding is reported, including more than five, with fixed/remaining status for fixes. |
+| Explicit standards check/fix | Standards checks cover the requested scope and report every finding, with fixed/remaining status for fixes; functional reviews use other skills. |
 | After a completed review, user says "fix them all" | Reuse the review's findings and original scope/baseline, verify they still apply, fix them, and recheck; do not repeat the initial review. Ask for missing or ambiguous findings/baseline. |
 | User requests review before accepting the implementation | Requested review runs immediately; acceptance is not an extra prerequisite. |
 | User requests "review these corrections", then "review the whole feature" | First review uses the identifiable follow-up delta/dependencies; second uses the full feature scope. Clarify an unavailable explicit baseline rather than substituting the full dirty tree. |

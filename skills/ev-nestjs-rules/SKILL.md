@@ -1,22 +1,21 @@
 ---
-name: ev-review-nestjs
-description: "Trigger: implementing or reviewing NestJS or Nest.js. Enforce layout, DTO validation, optimistic locking, API/docs setup, health contracts, service naming, and test ownership."
+name: ev-nestjs-rules
+description: "Trigger: implementing or checking NestJS code. Apply NestJS coding rules and exceptions."
 license: Apache-2.0
 metadata:
   author: "eduardovdev"
   version: "1.0"
 ---
 
-# EV NestJS Review Rules
+# EV NestJS Rules
 
 ## Activation Contract
 
-Use before NestJS implementation or with `ev-code-review`. Load general/backend rules through
-`ev-coding-standards`; never initiate a separate review or delegate.
+Apply these rules when implementing or checking NestJS code. Load general/domain rules through
+`ev-coding-standards`; preserve project guidance and applicable exceptions.
 
 ## Hard Rules
 
-- Preserve assigned scope, baseline, read-only constraints, and general/backend rules.
 - End injected service identifiers in `Service`, including constructor/property injection and custom
   tokens/factories. Classify actual provider contracts; exempt non-service dependencies and preserve
   framework-required names and external contracts.
@@ -32,7 +31,7 @@ Use before NestJS implementation or with `ev-code-review`. Load general/backend 
   `class-validator`; use `class-transformer` for needed transformations/nested instances. Prefer these
   alone; separate validation files/additional validators require a concrete need. Static types do not suffice.
 - Require the selected [optimistic-locking token](references/http.md#require-an-optimistic-locking-token-on-updates)
-  on resource updates, including PATCH: prefer an existing version; otherwise require a timezone-qualified
+  on updates requiring stale-edit protection, including PATCH: prefer a suitable integer version; otherwise require a timezone-qualified
   timestamp at stored precision. Apply the backend atomic update/409 rule and document the conflict response.
 - Validate path parameters at the HTTP boundary using a matching built-in pipe inline in `@Param()`;
   avoid duplicate manual format checks in controllers or services. Preserve distinct domain validation
@@ -51,7 +50,7 @@ Use before NestJS implementation or with `ev-code-review`. Load general/backend 
 | Ambiguous injected dependency | Trace provider contracts before applying service naming. |
 | Module files/tests | Apply independent category counts, plural grouping, and test ownership. |
 | Body endpoint/bootstrap | Verify DTO metadata, global validation, `/api`, and OpenAPI/Scalar at `/docs`. |
-| Resource update | Verify selected token validation, atomic comparison, and documented HTTP 409. |
+| Resource update | Verify concurrency strategy; when optimistic locking applies, verify token validation, atomic comparison, and documented HTTP 409. |
 | Path parameters | Verify format validation uses an appropriate inline built-in pipe when available. |
 | Health endpoint | Verify actual checks, direct payload, aggregation, and 200/503 mapping. |
 
@@ -59,16 +58,11 @@ Use before NestJS implementation or with `ev-code-review`. Load general/backend 
 
 1. Read complete [layout examples](references/examples.md) and [HTTP rules/examples](references/http.md).
 2. Inspect scoped modules, providers, endpoints, bootstrap, and tests; verify applicable rules.
-3. Preserve imports/exports and discovery when moving files. Classify naming/layout as low-severity
-   style findings; classify behavioral defects by impact. Record unresolved evidence as gaps.
+3. Preserve imports/exports and discovery when moving files. Verify relevant behavior and report unresolved evidence as gaps.
 
 ## Output Contract
 
-During reviews, return severity, `path:line`, rule, evidence, impact, and minimal fix, plus each assigned ID:
-`nestjs-injected-provider-naming`;
-`nestjs-module-layout`; `nestjs-colocated-tests-module-fixtures`; `nestjs-body-dto-validation`;
-`nestjs-path-parameter-validation`; `nestjs-global-validation-pipe`; `nestjs-api-openapi-scalar`; `nestjs-health-checks`. Use
-`ev-code-review/references/coverage.md`; let the coordinator consolidate.
+Report relevant checks and material gaps. For requested standards checks, report evidenced violations.
 
 ## References
 

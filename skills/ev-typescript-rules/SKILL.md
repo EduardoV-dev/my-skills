@@ -1,23 +1,21 @@
 ---
-name: ev-review-typescript
-description: "Trigger: implementing or reviewing TypeScript. Supply contract, type, import, and environment rules before coding or with ev-code-review."
+name: ev-typescript-rules
+description: "Trigger: implementing or checking TypeScript code. Apply TypeScript coding rules and exceptions."
 license: Apache-2.0
 metadata:
   author: "eduardovdev"
   version: "1.0"
 ---
 
-# EV TypeScript Review Rules
+# EV TypeScript Rules
 
 ## Activation Contract
 
-Use before implementing TypeScript source/declarations/tests, or as an optional `ev-code-review`
-companion. Load general/domain rules through `ev-coding-standards` for implementation; do not start
-an independent review or delegate. Review output/check assignments apply only during reviews.
+Apply these rules when implementing or checking TypeScript code. Load general/domain rules through
+`ev-coding-standards`; preserve project guidance and applicable exceptions.
 
 ## Hard Rules
 
-- Preserve the coordinator's scope, baseline, read-only constraints, and general/domain rules.
 - Use strict TypeScript. Explicitly type exported function parameters and return values; ordinary
   exported constants may use inference. Preserve framework-required, overloaded, and generic contracts.
 - Prefer absolute imports using established project aliases when the module specifier is shorter than
@@ -88,15 +86,11 @@ an independent review or delegate. Review output/check assignments apply only du
    [rule examples and exceptions](references/examples.md).
 2. Check exported types, contract preservation, necessary narrowing, state modeling, response/page contracts and cursor schemas, function parameter/return
    object shapes, shorter absolute imports and alias resolution, and environment ownership.
-3. Use the project's documented non-writing typecheck when assigned by the coordinator; report gaps.
+3. Use the project's documented non-writing typecheck when relevant; report gaps.
 
 ## Output Contract
 
-Return evidence-backed candidates with severity, `path:line`, rule wording, impact, and smallest fix,
-plus a result for each assigned coverage ID: `typescript-exported-api-contracts`;
-`typescript-trust-narrowing-state-types`; `typescript-function-signatures-object-types`;
-`typescript-imports-configuration-environment`. Each result must use the shared status/evidence contract in
-`ev-code-review/references/coverage.md`. Let `ev-code-review` consolidate the report.
+Report relevant checks and material gaps. For requested standards checks, report evidenced violations.
 
 ## References
 

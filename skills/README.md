@@ -8,5 +8,5 @@ Use [project setup](../README.md#wire-skills-into-a-project) to wire installed s
 `AGENTS.md` for automatic session/task selection, including non-coding skills.
 Installed skills use their bundled references without requiring a local source checkout.
 For optional global pre-coding standards and check/fix/update workflows, use the
-[global setup](../README.md#global-coding-standards). For standalone reviews, install `ev-code-review`
+[global setup](../README.md#global-coding-standards). For coding rules, install `ev-code-rules`
 and the `ev-review-*` companions your project needs. See [review installation](../README.md#install-review-skills).

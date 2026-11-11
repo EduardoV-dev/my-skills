@@ -4,10 +4,6 @@ Apply to repository-authored code in every domain. Follow existing patterns unle
 with these rules. Apply technology-specific requirements only to that technology. Resolve paths
 relative to the owning application/package in monorepos; examples do not require new features.
 
-Coverage IDs: `general-ownership-structure`; `general-correctness-naming-boundaries`;
-`general-configuration-async-side-effects`; `general-errors-trust-boundaries-security`;
-`general-tests-verification`. For explicit reviews, record results using `references/coverage.md`;
-for ordinary implementation, use `references/generation-review.md`. Substantive rules apply to both.
 
 ## Priorities
 

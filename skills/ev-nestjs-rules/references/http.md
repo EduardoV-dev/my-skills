@@ -58,7 +58,8 @@ alone do not replace validation of the complete body.
 
 ## Require An Optimistic-Locking Token On Updates
 
-Apply the backend `backend-optimistic-locking` rule to resource updates. Prefer an existing version
+Apply the backend concurrency decision rule to resource updates. When stale-edit protection requires
+optimistic locking, apply `backend-optimistic-locking`. Prefer a suitable integer version
 column, with a required validated last-read version DTO field matching its actual database range and
 representation; do not convert large integers to unsafe JavaScript numbers. Otherwise reuse this runtime
 timestamp DTO at the narrowest shared owner, in `dtos/`, and keep its field required even for PATCH.
@@ -213,7 +214,7 @@ their shape. Framework health helpers' default output must be adapted to this co
 
 - Body validation rejects invalid fields, unknown fields, and invalid nested objects/arrays, while
   accepting valid input and preserving intended transformation behavior.
-- Update DTOs require the selected token even after partial-update composition; verify invalid/missing
+- For updates requiring optimistic locking, DTOs require the selected token even after partial-update composition; verify invalid/missing
   tokens, exact round trips at stored precision, HTTP 409 envelopes, and one winner for concurrent updates.
 - Path parameters accept valid identifiers and reject invalid formats before the controller method;
   integer pipes also deliver numbers to the service.

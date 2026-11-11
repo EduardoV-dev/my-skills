@@ -2,8 +2,8 @@
 
 Use this workflow for ordinary implementation and concrete follow-up edits. Load and apply full
 applicable standards as coding guidance; do not run a comprehensive code review unless requested.
-Requested reviews, standards checks/fixes, and corrections to formal-review findings use the
-coordinator's formal workflow over the entire requested scope.
+Requested standards checks/fixes use the standards check-and-fix workflow over the requested scope.
+Use other skills for functional reviews.
 
 ## Implement And Check Behavior
 
@@ -30,11 +30,8 @@ implementation, even when called fixes or supplied after the user's own review. 
 working state, preserve unrelated work, and check changed behavior and affected dependencies. Do not
 automatically review either the follow-up delta or the entire original implementation.
 
-When the user requests a review, honor its scope and baseline: "review these corrections" means the
-follow-up delta and relevant dependencies; "review the whole feature" means the full feature scope.
 Retain enough task context to identify an explicitly requested follow-up delta; clarify an unavailable
-baseline rather than silently substituting the full dirty tree. Without explicit scope, use the
-coordinator's default. A review need not wait for acceptance if the user explicitly requests it earlier.
+baseline rather than silently substituting the full dirty tree.
 
 ## Resume After Context Loss
 

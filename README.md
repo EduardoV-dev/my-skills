@@ -12,10 +12,10 @@ rules: standards apply before implementation, not only when a review is requeste
    npx skills add EduardoV-dev/my-skills \
      --skill ev-project-setup \
      --skill ev-coding-standards \
-     --skill ev-code-review
+     --skill ev-code-rules
    ```
 
-   Select the technology companions your project needs; see [available companions](#install-review-skills).
+   Select the technology companions your project needs; see [available companions](#install-coding-rule-skills).
    Existing global installations can also supply these skills; a second installation is not required.
 2. Quit and restart your agent, then ask: **“Use ev-project-setup to wire the installed skills into
    this project.”** It resolves available skills, checks project guidance, and adds one managed block
@@ -53,7 +53,7 @@ See [setup and behavioral checks](skills/ev-project-setup/references/setup.md).
 This adapter applies to agents that read `AGENTS.md`; other instruction formats need their own adapter.
 The global OpenCode setup below is separate and remains useful for personal defaults across projects.
 
-Shared formatting rules include [`general-logical-code-grouping`](skills/ev-code-review/references/logical-code-grouping.md):
+Shared formatting rules include [`general-logical-code-grouping`](skills/ev-code-rules/references/logical-code-grouping.md):
 separate meaningful processing phases while keeping related statements together. Setup and pre-coding
 inspect the target project's existing formatter/linter for compatible enforcement; semantic grouping
 uses coding judgment during implementation and is assessed fully during requested reviews.
@@ -69,9 +69,8 @@ git pull --ff-only origin main
 python3 skills/ev-coding-standards/assets/manage.py setup
 ```
 
-Setup links every maintained skill into `~/.agents/skills/`, installs four command links under
-`~/.config/opencode/commands/`, and maintains one delimited loader block in the existing global
-`~/.config/opencode/AGENTS.md`. It preserves unrelated content and refuses installation collisions.
+Setup links every maintained skill into `~/.agents/skills/` and maintains one delimited loader block
+in the existing global `~/.config/opencode/AGENTS.md`. It preserves unrelated content and refuses installation collisions.
 Rerunning setup is safe; it removes only retired skill and command links owned by this checkout,
 including broken retired command links in OpenCode's `commands/` and `command/` directories.
 The global loader resolves installed skills without embedding this checkout's absolute path.
@@ -86,15 +85,8 @@ and missing required guidance must be resolved before affected edits. Unknown te
 coverage gaps, not permission to invent rules. Other agents can discover `~/.agents/skills/`, but
 need their own global-instruction adapter to require loading before editing.
 
-| OpenCode command | Workflow |
-| --- | --- |
-| `/ev-code-review [scope]` | Read-only standards review; defaults to working-tree changes, not the last commit. Afterward, say “fix them all” to correct its findings. |
-| `/ev-clean-unused-code [scope]` | Find and remove proven-unused code; report uncertain candidates. |
-| `/ev-simplify-code [scope]` | Find and simplify or deduplicate code while preserving behavior. |
-| `/ev-update` | Explicit checkout-backed update: require clean `main`, pull fast-forward only, validate, and reconcile global exposure. Standalone copies need their original installer. |
-
-Natural-language check/fix/update requests use the same skill workflows. Only an explicitly requested
-checkout-backed setup/update needs source Git access. Keep that checkout on `main`; setup can expose
+Ask the matching skill in natural language for standards checks, cleanup, simplification, or updates.
+Only an explicitly requested checkout-backed setup/update needs source Git access. Keep that checkout on `main`; setup can expose
 uncommitted changes and reports its dirty state. Update refuses dirty, diverged, or unpublished work.
 For standalone installed copies, the agent reports that the repository update helper is unavailable
 and requests reinstallation through the original installer/scope; it does not search for or clone a
@@ -114,7 +106,6 @@ repair; no automatic reset is performed. Loaded instructions can remain stale un
 ```bash
 python3 skills/ev-coding-standards/assets/manage.py validate
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s skills/ev-coding-standards/tests
-PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s skills/ev-code-review/tests
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s skills/ev-project-setup/tests
 npx skills add . --list
 ```
@@ -131,7 +122,7 @@ Install the cleanup skills alongside the EV coding core:
 
 ```bash
 npx skills add EduardoV-dev/my-skills \
-  --skill ev-coding-standards --skill ev-code-review \
+  --skill ev-coding-standards --skill ev-code-rules \
   --skill ev-dead-code --skill ev-code-simplification
 ```
 
@@ -149,8 +140,8 @@ npx skills add EduardoV-dev/my-skills --skill ev-api-contracts
 
 The skill requires shared `ApiError`/`ApiResponse<T>` contracts, wrapped offset/cursor pages, and
 validated extensible cursor utilities. Before implementing pagination, it recommends a strategy and
-waits for your choice. Review enforcement lives in `ev-code-review`'s backend rules and
-`ev-review-typescript`; neither requires this implementation skill to be installed.
+waits for your choice. Related coding rules live in `ev-code-rules`'s backend rules and
+`ev-typescript-rules`; neither requires this implementation skill to be installed.
 Cursor metadata requires `nextCursor: string | null` and `resetCursor: boolean`; true invalidates the
 current pagination chain and tells clients to discard accumulated pages/cursors and restart without
 a cursor. Ordinary empty/final pages use false; backward navigation adds `prevCursor` only on request.
@@ -159,15 +150,18 @@ Health-check endpoints, including liveness/readiness, return the shared `HealthR
 All checks up yields HTTP 200; mixed or all-down results yield HTTP 503. Health responses do not use
 the ordinary envelope; `ApiResponse<T>` stays strict for ordinary endpoints.
 
-Resource updates, including PATCH, require a last-read concurrency token: prefer an existing version
-column, otherwise use `lastKnownUpdatedAt`. The database atomically matches identity, authorization scope,
-and the token; a failed match returns HTTP 409 with a refresh instruction, preserving existing access/not-found
+Choose the simplest concurrency mechanism that preserves the business invariant: standard updates for
+acceptable last-write-wins, atomic relative or conditional updates for database invariants, optimistic
+locking for stale user edits, and transactions with pessimistic locking when needed for dependent work.
+For optimistic updates, including PATCH, require a last-read token: prefer a suitable integer version,
+otherwise use `lastKnownUpdatedAt`. The database atomically matches identity, authorization scope, and
+the token; a failed match returns HTTP 409 with a refresh instruction, preserving existing access/not-found
 policy. Successful writes advance and return the exact new token. For JavaScript/PostgreSQL applications,
 `ev-postgres` covers `timestamptz(3)`, a monotonic update trigger, and transaction/locking rules. See the
 [optimistic-locking contract](skills/ev-api-contracts/references/optimistic-locking.md)
-and [NestJS DTO example](skills/ev-review-nestjs/references/http.md#require-an-optimistic-locking-token-on-updates).
+and [NestJS DTO example](skills/ev-nestjs-rules/references/http.md#require-an-optimistic-locking-token-on-updates).
 
-## Install review skills
+## Install coding rule skills
 
 After publishing this repository on GitHub, run this from the target project for interactive selection:
 
@@ -175,25 +169,25 @@ After publishing this repository on GitHub, run this from the target project for
 npx skills add EduardoV-dev/my-skills
 ```
 
-Select **`ev-code-review`** and only the technology companions the project needs. The CLI does not
+Select **`ev-code-rules`** and only the technology companions the project needs. The CLI does not
 automatically select the core when you select a companion.
 
 | Skill | Coverage |
 | --- | --- |
-| `ev-code-review` | General code/security rules, frontend/backend rules, scope and review coordination |
-| `ev-review-typescript` | TypeScript contracts, narrowing, and environment-module conventions |
-| `ev-review-react` | React components, hooks, state, safe rendering, and applicable UI testing |
-| `ev-review-nextjs` | Next.js routes, rendering, Server Actions, and client/server environment boundaries |
-| `ev-review-nestjs` | NestJS plural grouping, validated body DTOs, optimistic locking, global validation, `/api`, OpenAPI/Scalar at `/docs`, health contracts, injected-service naming, and test ownership |
+| `ev-code-rules` | General code/security rules and frontend/backend rules |
+| `ev-typescript-rules` | TypeScript contracts, narrowing, and environment-module conventions |
+| `ev-react-rules` | React components, hooks, state, safe rendering, and applicable UI testing |
+| `ev-nextjs-rules` | Next.js routes, rendering, Server Actions, and client/server environment boundaries |
+| `ev-nestjs-rules` | NestJS plural grouping, validated body DTOs, optimistic locking, global validation, `/api`, OpenAPI/Scalar at `/docs`, health contracts, injected-service naming, and test ownership |
 | `ev-postgres` | PostgreSQL timestamp precision, optimistic and pessimistic locking, and transaction boundaries |
 
 For explicit selection, for example in a React + TypeScript project:
 
 ```bash
 npx skills add EduardoV-dev/my-skills \
-  --skill ev-code-review \
-  --skill ev-review-typescript \
-  --skill ev-review-react
+  --skill ev-code-rules \
+  --skill ev-typescript-rules \
+  --skill ev-react-rules
 ```
 
 List skills without installing:
@@ -204,45 +198,14 @@ npx skills add EduardoV-dev/my-skills --list
 
 Before publishing, verify discovery locally from this repository with `npx skills add . --list`.
 
-## How reviews select rules
+## How coding rules are selected
 
-The core always reads general rules, then selects frontend/backend rules per file's behavior and
-runtime. It loads installed technology companions only for relevant scoped code—not merely because
-a dependency appears in a manifest. Mixed files receive both domain rule sets; tests follow their subject.
+`ev-coding-standards` loads general rules and applicable frontend, backend, and technology rules based
+on the code being changed. Explicit standards checks use the same rules; use other skills for functional
+code reviews. Load newly applicable guidance when the scope changes, and run relevant project checks.
 
-Missing companions are reported as technology-specific coverage gaps. The core continues reviewing
-with its bundled rules and does not install anything automatically. Add a companion when that coverage
-is needed. Keep optional companions alongside the core in the same installation scope when possible.
-
-Reviews run in the current agent thread regardless of size. The coordinator evaluates applicable
-general, domain, and technology checks sequentially and consolidates them into one report. Maintained
-skills do not spawn subagents or parallel reviewers. Reviews remain read-only unless fixes are
-requested.
-
-Explicit review/check/fix requests display every finding directly in chat, ordered by severity, with
-location, violated rule, evidence, impact, and minimal fix. Fix reports include fixed/remaining status
-and verification evidence. Findings are never limited to five or a top-N subset. During code generation,
-standards guide implementation and relevant project checks run without automatic code review;
-unresolved blockers, required decisions, and material verification gaps are still surfaced.
-
-### Coding guidance now, complete review on request
-
-Implementation uses the full applicable rules as guidance, without a mandatory review pass:
-
-1. Load complete applicable guidance once per active context; reuse unchanged text and load missing,
-   changed, or newly applicable guidance before affected work.
-2. Implement the requested behavior and run relevant tests, lint/format checks, type checks, and builds.
-   Check affected consumers and integration; reuse results only while they cover the completed state.
-3. Report what works, performed checks, and material gaps. Do not require unit-review checkpoints,
-   per-rule review-evidence ledgers, or final review-coverage reconciliation.
-
-Request a complete review when the changes meet your expectations and work, or earlier if you want
-feedback. Explicit reviews assess their entire requested scope using formal coverage and exhaustive
-reporting; implementation checks do not substitute for that review or prove full compliance.
-After compaction, verify current sources/changes and retained check results, and reload missing full rules.
-See [implementation checks](skills/ev-code-review/references/generation-review.md) and
-[behavioral regression and cost checks](skills/ev-code-review/references/generation-verification.md).
-Metadata/helper tests do not establish agent compliance, speed gains, or defect-detection parity.
+See [implementation checks](skills/ev-code-rules/references/generation-review.md) and
+[workflow verification](skills/ev-code-rules/references/generation-verification.md).
 
 ## Repository layout
 

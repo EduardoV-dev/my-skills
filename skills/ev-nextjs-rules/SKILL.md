@@ -1,23 +1,21 @@
 ---
-name: ev-review-nextjs
-description: "Trigger: implementing or reviewing Next.js. Supply route, rendering, client/server boundary, and environment rules before coding or with ev-code-review."
+name: ev-nextjs-rules
+description: "Trigger: implementing or checking Next.js code. Apply Next.js coding rules and exceptions."
 license: Apache-2.0
 metadata:
   author: "eduardovdev"
   version: "1.0"
 ---
 
-# EV Next.js Review Rules
+# EV Next.js Rules
 
 ## Activation Contract
 
-Use before implementing Next.js routes/rendering/Server Actions/boundaries/configuration, or as an
-optional `ev-code-review` companion. Load general/domain rules through `ev-coding-standards` for
-implementation; do not start reviews or delegate. Review output/check assignments apply only in reviews.
+Apply these rules when implementing or checking Next.js code. Load general/domain rules through
+`ev-coding-standards`; preserve project guidance and applicable exceptions.
 
 ## Hard Rules
 
-- Preserve coordinator scope, baseline, read-only constraints, and general/domain rules.
 - Keep route files such as `page.tsx`, `error.tsx`, and `loading.tsx` thin; they may re-export their
   feature implementation. Routes may own framework integration, metadata, configuration, and data-loading
   orchestration; move substantial feature UI and business workflows into feature modules. Preserve
@@ -59,15 +57,11 @@ implementation; do not start reviews or delegate. Review output/check assignment
 1. Identify owning Next.js version, router, directives, imports, and relevant configuration. Read the
    [paired examples and exceptions](references/examples.md), adapting framework APIs to the installed version.
 2. Trace route ownership, client import graphs, rendering behavior, server entry points, and environment reads.
-3. Verify applicable exceptions and assigned checks; do not replace project conventions unnecessarily.
+3. Verify applicable exceptions and applicable checks; do not replace project conventions unnecessarily.
 
 ## Output Contract
 
-Return candidates with severity, `path:line`, rule wording, evidence/impact, and smallest fix, plus a
-result for each assigned coverage ID: `nextjs-routes-rendering-client-boundaries`;
-`nextjs-server-only-imports-environment`; `nextjs-server-entry-validation-authorization`.
-Each result must use the shared status/evidence contract in `ev-code-review/references/coverage.md`.
-The coordinator consolidates findings.
+Report relevant checks and material gaps. For requested standards checks, report evidenced violations.
 
 ## References
 

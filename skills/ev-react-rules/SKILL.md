@@ -1,23 +1,21 @@
 ---
-name: ev-review-react
-description: "Trigger: implementing or reviewing React components, hooks, or JSX. Supply structure, state, rendering, and testing rules before coding or with ev-code-review."
+name: ev-react-rules
+description: "Trigger: implementing or checking React code. Apply React coding rules and exceptions."
 license: Apache-2.0
 metadata:
   author: "eduardovdev"
   version: "1.0"
 ---
 
-# EV React Review Rules
+# EV React Rules
 
 ## Activation Contract
 
-Use before implementing React components/hooks/JSX/tests, or as an optional `ev-code-review` companion.
-Load general/domain rules through `ev-coding-standards` for implementation; do not start another review
-or delegate. Review output/check assignments apply only during reviews.
+Apply these rules when implementing or checking React code. Load general/domain rules through
+`ev-coding-standards`; preserve project guidance and applicable exceptions.
 
 ## Hard Rules
 
-- Preserve coordinator scope, baseline, read-only constraints, and general/domain rules.
 - Declare one React component per production `.tsx` file, including private components and components
   wrapped in `memo` or similar APIs. Inline JSX and JSX returned by `.map()` callbacks are not additional
   component declarations.
@@ -66,15 +64,11 @@ or delegate. Review output/check assignments apply only during reviews.
 1. Verify actual React usage, component ownership, hook consumers, styling conventions, and applicable
    test tooling. Read the [rule examples and exceptions](references/examples.md).
 2. Check component count/props, collocation, hook responsibilities, derived state, and safe rendering.
-3. Verify exceptions and behavioral impact; report assigned check results without duplicating shared runs.
+3. Verify exceptions and behavioral impact; report relevant checks without duplicating shared runs.
 
 ## Output Contract
 
-Return candidates with severity, `path:line`, rule wording, evidence/impact, and smallest fix, plus a
-result for each assigned coverage ID: `react-component-ownership-props`;
-`react-hooks-state-derived-values`; `react-safe-rendering-accessibility-testing`.
-Each result must use the shared status/evidence contract in `ev-code-review/references/coverage.md`.
-The coordinator consolidates findings.
+Report relevant checks and material gaps. For requested standards checks, report evidenced violations.
 
 ## References
 
